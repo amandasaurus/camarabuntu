@@ -1,0 +1,14 @@
+#! /bin/bash
+
+# Default max workspaces = 1
+gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
+    --type int \
+        --set /apps/metacity/general/num_workspaces 1
+
+# set the default background
+gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
+    --type string \
+    --set /desktop/gnome/background/picture_filename \
+    /usr/share/backgrounds/camara-background-1.jpg
