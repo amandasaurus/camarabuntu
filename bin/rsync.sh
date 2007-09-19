@@ -1,2 +1,2 @@
 #! /bin/bash
-rsync -aPh --exclude=hda.img "$*" * nayru:camara/camarabuntu/
+rsync -aPh --exclude=hda.img "$*" . nayru:camara/camarabuntu
