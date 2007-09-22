@@ -38,12 +38,15 @@ d-i clock-setup/utc boolean true
 d-i time/zone string Europe/Dublin
 
 ## user set up
-# No root
-d-i passwd/root-login boolean false
-# But make a normal user
-d-i passwd/make-user boolean true
+d-i passwd/root-login boolean true
+# MD5 sum of the user's password
+d-i passwd/root-password-crypted password $1$5Vmavx2s$bzv0NHraiyhkD9guVZS2g.
+
+# When we set the root password, the first user doesn't have sudo
+# Source: https://bugs.launchpad.net/ubuntu/+source/user-setup/+bug/16139
 
 # Set username & password
+d-i passwd/make-user boolean true
 d-i passwd/user-fullname string Camara
 d-i passwd/username string camara
 d-i passwd/user-password password camara
