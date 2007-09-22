@@ -1,0 +1,4 @@
+This folder has all the indices for ubuntu. These are needed while creating a
+new install CD. See the bin/add-debs-to-cd.py script
+
+To redownload all the files again, run redownload.sh
