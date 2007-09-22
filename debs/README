@@ -13,3 +13,5 @@ remove the .dsc and .tar.gz files, we don't need them AFIAK.
 source/ubuntu-keyring-2005.01.12.1/
     The source for the ubuntu-keyring. To add new debs to an install CD we have
     to create a new archive and sign it. 
+
+See indices/README
