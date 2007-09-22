@@ -30,6 +30,7 @@ assert options.indices is not None
 assert os.path.isdir( options.indices )
 
 cddir = os.path.abspath( options.cddir )
+indices = os.path.abspath( options.indices )
 
 # see what the name of the distro is, (eg dapper, edgy.. )
 dists_dir = [ dir for dir in os.listdir( os.path.join ( cddir, 'dists' ) ) if dir not in ['stable', 'unstable' ] ]
@@ -158,7 +159,7 @@ Default {
 Contents {
   Compress "gzip";
 };
-""" % {'cddir':cddir, 'dist':dist, 'indices':options.indices} )
+""" % {'cddir':cddir, 'dist':dist, 'indices':indices} )
 
 ftparchive_deb.close()
 
@@ -190,5 +191,36 @@ for line in main_packages:
 extra_overrides.close()
 main_packages.close()
 
+ftparchive_udeb = open( os.path.join( temp_dir, "apt-ftparchive-udeb.conf" ), 'w')
+ftparchive_udeb.write("""Dir {
+  ArchiveDir "%(cddir)s;
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/main" {
+  Packages "dists/%(dist)s/main/debian-installer/binary-i386/Packages";
+  BinOverride "%(indices)s/override.%(dist)s.main.debian-installer";
+};
+
+BinDirectory "pool/restricted" {
+  Packages "dists/%(dist)s/restricted/debian-installer/binary-i386/Packages";
+  BinOverride "%(indices)s/override.%(dist)s.restricted.debian-installer";
+};
+
+Default {
+  Packages {
+    Extensions ".udeb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+""" % {'cddir':cddir, 'dist':dist, 'indices':indices} )
+ftparchive_udeb.close()
 
     
