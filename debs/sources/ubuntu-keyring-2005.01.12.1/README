@@ -1,0 +1,12 @@
+README for the ubuntu-keyring package
+=====================================
+
+
+Introduction
+------------
+
+The Ubuntu project signs its Release files that are stored on the
+ubuntu server and its mirrors. 
+
+
+

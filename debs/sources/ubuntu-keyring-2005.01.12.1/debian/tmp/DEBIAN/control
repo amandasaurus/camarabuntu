@@ -1,0 +1,11 @@
+Package: ubuntu-keyring
+Version: 2005.01.12.1
+Section: misc
+Priority: optional
+Architecture: all
+Depends: gnupg (>= 1.0.6-4)
+Installed-Size: 48
+Maintainer: Michael Vogt <michael.vogt@canonical.com>
+Description: GnuPG keys of the Ubuntu archive
+ The Ubuntu project digitally signs its Release files. This package
+ contains the archive keys used for that.
