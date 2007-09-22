@@ -1,0 +1,65 @@
+# Set the installer language to Hiberno-English and UK keybaord layout
+# Note: This are set before the cd is loaded, so they must be specified in the
+# kernel options as so:
+# locale=en_IE console-setup/layoutcode=uk
+# These lines are incl
+#d-i debian-installer/locale string ie_IE
+#d-i console-setup/layoutcode string uk
+
+## Network
+d-i netcfg/choose_interface select auto
+d-i netcfg/disable_dhcp boolean true
+d-i netcfg/get_nameservers string 127.0.0.1
+d-i netcfg/get_ipaddress string 127.0.0.1
+d-i netcfg/get_netmask string 255.255.255.0
+d-i netcfg/get_gateway string 127.0.0.1
+d-i netcfg/confirm_static boolean trueable all networking, by not specifing anything here.
+d-i mirror/http/proxy string
+
+# Adjust the default hostname.
+d-i netcfg/get_hostname  string camarabuntu
+
+## Partitioning
+# Put everything in one partition
+d-i partman-auto/disk string /dev/hda
+
+d-i partman-auto/choose_recipe \
+     select All files in one partition (recommended for new users)
+
+d-i partman/confirm_write_new_label boolean true
+d-i partman/choose_partition \
+     select Finish partitioning and write changes to disk
+d-i partman/confirm boolean true
+
+# Sync clock to UTC
+d-i clock-setup/utc boolean true
+
+# Set the timezone
+d-i time/zone string Europe/Dublin
+
+## user set up
+# No root
+d-i passwd/root-login boolean false
+# But make a normal user
+d-i passwd/make-user boolean true
+
+# Set username & password
+d-i passwd/user-fullname string Camara
+d-i passwd/username string camara
+d-i passwd/user-password password camara
+d-i passwd/user-password-again password camara
+
+# install grub in MBR, a handy default
+d-i grub-installer/with_other_os boolean true
+
+# Install the Edubuntu desktop and server.
+tasksel tasksel/first    multiselect edubuntu-desktop, edubuntu-server
+
+# don’t show us the ‘Installing successful’ dialog
+d-i finish-install/reboot_in_progress note
+
+# XServer set up.
+xserver-xorg xserver-xorg/autodetect_monitor boolean true
+xserver-xorg xserver-xorg/config/display/modes multiselect 1280×1024, 800×600, 640×480
+xserver-xorg xserver-xorg/config/monitor/selection-method select medium
+xserver-xorg xserver-xorg/config/monitor/mode-list select 1024×768 @ 60 Hz
