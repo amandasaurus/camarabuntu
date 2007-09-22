@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os, shutil, tempfile, commands, glob, sys
+import os, shutil, tempfile, commands, glob, sys, re
 
 parser = OptionParser()
 
@@ -15,15 +15,21 @@ parser.add_option( "-k", "--gpg-key",
 
 parser.add_option( "--ubuntu-keyring",
                    dest="keyring", default=None, type="string",
-                   help="The location of the ubuntu keyring source. if not provided it will be downloaded." )
+                   help="The directory of the ubuntu keyring source. if not provided it will be downloaded." )
+
+parser.add_option( "--indices",
+                   dest="indices", default=None, type="string",
+                   help="The directory of the ubuntu indices" )
                     
 
 (options, debs) = parser.parse_args()
 
 assert options.cddir is not None
 assert options.gpgkey is not None
+assert options.indices is not None
+assert os.path.isdir( options.indices )
 
-cddir = options.cddir
+cddir = os.path.abspath( options.cddir )
 
 # see what the name of the distro is, (eg dapper, edgy.. )
 dists_dir = [ dir for dir in os.listdir( os.path.join ( cddir, 'dists' ) ) if dir not in ['stable', 'unstable' ] ]
@@ -114,3 +120,75 @@ if status != 0:
 shutil.copy( glob.glob( os.path.join( temp_dir, "ubuntu-keyring*_all.deb" ) )[0], os.path.join( old_cwd, cddir, 'pool/main/u/ubuntu-keyring/' ) )
 
 
+# Clean up, remove all this crap
+os.chdir( old_cwd )
+shutil.rmtree( temp_dir )
+
+
+## Now create the indices.
+temp_dir = tempfile.mkdtemp( prefix="camarabuntu-tmp-", dir=old_cwd )
+
+ftparchive_deb = open( os.path.join( temp_dir, 'apt-ftparchive-deb.conf' ), 'w' )
+ftparchive_deb.write( """Dir {
+  ArchiveDir "%(cddir)s";
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/main" {
+  Packages "dists/%(dist)s/main/binary-i386/Packages";
+  BinOverride "%(indices)s/override.%(dist)s.main";
+  ExtraOverride "%(indices)s/override.%(dist)s.extra.main";
+};
+
+BinDirectory "pool/restricted" {
+ Packages "dists/%(dist)s/restricted/binary-i386/Packages";
+ BinOverride "%(indices)s/override.%(dist)s.restricted";
+};
+
+Default {
+  Packages {
+    Extensions ".deb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+""" % {'cddir':cddir, 'dist':dist, 'indices':options.indices} )
+
+ftparchive_deb.close()
+
+# generate the extras override. This is converted from the perl version on
+# https://help.ubuntu.com/community/InstallCDCustomization
+
+main_packages = open( os.path.join( old_cwd, cddir, 'dists', dist, 'main/binary-i386/Packages' ) )
+extra_overrides = open( os.path.join( temp_dir, "override.%s.extra.main" % dist ), 'w' )
+task = None
+for line in main_packages:
+    line = line.rstrip("\n")
+    line = line.rstrip("\r\n")
+    line = line.rstrip("\r")
+    if re.search("^\s", line):
+        continue # to the next line
+    if line == "" and task is not None:
+        extra_overrides.write("%s Task %s\n" % (package, task))
+        package = None
+        task = None
+    if line == "":
+        continue
+    key, value = line.split(": ", 1)
+    if key == "Package":
+        package = value
+    if key == "Task":
+        task = value
+
+
+extra_overrides.close()
+main_packages.close()
+
+
+    
