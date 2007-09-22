@@ -1,11 +1,11 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os
+import os, shutil
 
 parser = OptionParser()
 
-parser.add_option("-c", "--cd-dir",
+parser.add_option("-d", "--cd-dir",
                   dest="cddir",
                   help="The directory of the install cd details")
 
@@ -34,6 +34,11 @@ makedir_if_not_exist( cddir, 'dists', dist, 'extras', 'binary-i386' )
 makedir_if_not_exist( cddir, 'pool', 'extras' )
 makedir_if_not_exist( cddir, 'isolinux' )
 makedir_if_not_exist( cddir, 'preseed' )
+
+# Copy all the debs to the extras file
+for deb in debs:
+    print "Copying %s" % deb
+    shutil.copy( deb, os.path.join( cddir, "pool", "extras" ) )
 
 releases_file = open( os.path.join( cddir, 'dists', dist, 'extras', 'binary-i386', 'Release' ), 'w' )
 releases_file.write( "Archive: " + dist + "\n" )
