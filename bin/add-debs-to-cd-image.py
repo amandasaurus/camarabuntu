@@ -248,4 +248,17 @@ Contents {
 };
 """ % {'cddir':cddir, 'dist':dist, 'indices':indices} )
 ftparchive_extras.close()
+
+releases_file = open( os.path.join( temp_dir, "releases.conf" ), 'w' )
+releases_file.write("""
+APT::FTPArchive::Release::Origin "Ubuntu";
+APT::FTPArchive::Release::Label "Ubuntu";
+APT::FTPArchive::Release::Suite "%(dist)s";
+APT::FTPArchive::Release::Version "%(dist_number)s";
+APT::FTPArchive::Release::Codename "%(dist)s";
+APT::FTPArchive::Release::Architectures "i386";
+APT::FTPArchive::Release::Components "main restricted extras";
+APT::FTPArchive::Release::Description "Ubuntu %(dist_number)s";
+""" % {'cddir':cddir, 'dist':dist, 'indices':indices, 'dist_number':dist_name_to_version[dist]} )
+releases_file.close()
     
