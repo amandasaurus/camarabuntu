@@ -223,4 +223,29 @@ Contents {
 """ % {'cddir':cddir, 'dist':dist, 'indices':indices} )
 ftparchive_udeb.close()
 
+ftparchive_extras = open( os.path.join( temp_dir, 'apt-ftparchive-extras.conf' ), 'w')
+ftparchive_extras.write("""Dir {
+  ArchiveDir "%(cddir)s";
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/extras" {
+  Packages "dists/%(dist)s/extras/binary-i386/Packages";
+};
+
+Default {
+  Packages {
+    Extensions ".deb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+""" % {'cddir':cddir, 'dist':dist, 'indices':indices} )
+ftparchive_extras.close()
     
