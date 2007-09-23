@@ -22,7 +22,9 @@ parser.add_option( "--indices",
                    help="The directory of the ubuntu indices" )
                     
 
-(options, debs) = parser.parse_args()
+(options, orig_debs) = parser.parse_args()
+
+debs = [os.path.abspath( deb ) for deb in orig_debs ]
 
 assert options.cddir is not None
 assert options.gpgkey is not None
