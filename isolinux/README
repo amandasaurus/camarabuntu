@@ -4,3 +4,11 @@ They go into the isolinux directory of the CD image
 splash.pcx.gz is the background to the first thing you see when you boot up. It
 should be unzipped before adding it to the CD. The colour of the camara logo is
 brown in this version. It should be green
+
+isolinux.cfg
+This file has all the menu options and what they do.
+
+Note: for dapper 6.06 this file works, the version on
+http://blog.technomancy.org/2007/04/09/automating-an-edubuntu-install-cd/
+doesn't for some reason. The version on technomancy works for 6.10, edgy. It's
+something to do with the order of the boot options
