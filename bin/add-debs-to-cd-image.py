@@ -194,7 +194,7 @@ main_packages.close()
 
 ftparchive_udeb = open( os.path.join( temp_dir, "apt-ftparchive-udeb.conf" ), 'w')
 ftparchive_udeb.write("""Dir {
-  ArchiveDir "%(cddir)s;
+  ArchiveDir "%(cddir)s";
 };
 
 TreeDefault {
@@ -282,6 +282,9 @@ if status != 0:
     print output
 assert status == 0
 
+if os.path.isfile( os.path.join( cddir, 'dists', dist, 'Release.gpg') ):
+    # Otherwise apt-ftparchive will ask to overwrite it, we want this whole process automated
+    os.remove( os.path.join( cddir, 'dists', dist, 'Release.gpg' ) )
 status, output = commands.getstatusoutput("apt-ftparchive -c %(temp_dir)s/release.conf release %(cddir)s/dists/%(dist)s > %(cddir)s/dists/%(dist)s/Release" % {'dist':dist, 'cddir':cddir, 'temp_dir':temp_dir})
 if status != 0:
     print output
