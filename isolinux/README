@@ -1,0 +1,3 @@
+The isolinux.cfg and related, are used in the inital boot process.
+They go into the isolinux directory of the CD image
+
