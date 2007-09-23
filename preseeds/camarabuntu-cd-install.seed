@@ -56,7 +56,7 @@ d-i passwd/user-password-again password camara
 d-i grub-installer/with_other_os boolean true
 
 # Install the Edubuntu desktop and server.
-tasksel tasksel/first    multiselect edubuntu-desktop, edubuntu-server
+d-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$
 
 # don’t show us the ‘Installing successful’ dialog
 d-i finish-install/reboot_in_progress note
