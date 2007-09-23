@@ -128,6 +128,7 @@ shutil.rmtree( temp_dir )
 
 ## Now create the indices.
 temp_dir = tempfile.mkdtemp( prefix="camarabuntu-tmp-", dir=old_cwd )
+os.chdir( temp_dir )
 
 ftparchive_deb = open( os.path.join( temp_dir, 'apt-ftparchive-deb.conf' ), 'w' )
 ftparchive_deb.write( """Dir {
@@ -249,8 +250,8 @@ Contents {
 """ % {'cddir':cddir, 'dist':dist, 'indices':indices} )
 ftparchive_extras.close()
 
-releases_file = open( os.path.join( temp_dir, "releases.conf" ), 'w' )
-releases_file.write("""
+release_file = open( os.path.join( temp_dir, "release.conf" ), 'w' )
+release_file.write("""
 APT::FTPArchive::Release::Origin "Ubuntu";
 APT::FTPArchive::Release::Label "Ubuntu";
 APT::FTPArchive::Release::Suite "%(dist)s";
@@ -260,5 +261,32 @@ APT::FTPArchive::Release::Architectures "i386";
 APT::FTPArchive::Release::Components "main restricted extras";
 APT::FTPArchive::Release::Description "Ubuntu %(dist_number)s";
 """ % {'cddir':cddir, 'dist':dist, 'indices':indices, 'dist_number':dist_name_to_version[dist]} )
-releases_file.close()
+release_file.close()
+
+# now build the repository
+
+print "Generating the APT repository..."
+
+status, output = commands.getstatusoutput("apt-ftparchive -c %(temp_dir)s/release.conf generate %(temp_dir)s/apt-ftparchive-deb.conf" % {'temp_dir':temp_dir})
+if status != 0:
+    print output
+assert status == 0
+
+status, output = commands.getstatusoutput("apt-ftparchive -c %(temp_dir)s/release.conf generate %(temp_dir)s/apt-ftparchive-udeb.conf" % {'temp_dir':temp_dir})
+if status != 0:
+    print output
+assert status == 0
+
+status, output = commands.getstatusoutput("apt-ftparchive -c %(temp_dir)s/release.conf generate %(temp_dir)s/apt-ftparchive-extras.conf"% {'temp_dir':temp_dir})
+if status != 0:
+    print output
+assert status == 0
+
+status, output = commands.getstatusoutput("apt-ftparchive -c %(temp_dir)s/release.conf release %(cddir)s/dists/%(dist)s > %(cddir)s/dists/%(dist)s/Release" % {'dist':dist, 'cddir':cddir, 'temp_dir':temp_dir})
+if status != 0:
+    print output
+assert status == 0
+
+status, output = commands.getstatusoutput( "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey})
+assert status == 0
     
