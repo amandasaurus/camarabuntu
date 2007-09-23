@@ -294,4 +294,27 @@ assert status == 0
 
 status, output = commands.getstatusoutput( "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey})
 assert status == 0
+
+# Clean up
+os.chdir( old_cwd )
+shutil.rmtree( temp_dir )
+
+
+# Find out the name of all the packages in the repository to add to the preseed file
+print "Generating a list of all the packages to install"
+package_names = []
+for deb in debs:
+    status, output = commands.getstatusoutput( "dpkg --info \"%s\"" % deb )
+    assert status == 0
+    for line in output.split("\n"):
+        line = line.rstrip("\n")
+        splits = line.split(": ", 1)
+        if len(splits) != 2:
+            continue
+        key, value = splits
+        if key == " Package":
+            package_names.append(value)
+
+print "Please add the following to the install pattern in the pressed file:"
+print "|".join(["~t^%s$" % package_name for package_name in package_names])
     
