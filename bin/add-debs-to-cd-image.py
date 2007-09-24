@@ -316,5 +316,4 @@ for deb in debs:
             package_names.append(value)
 
 print "Please add the following to the install pattern in the pressed file:"
-print "|".join(["~t^%s$" % package_name for package_name in package_names])
-    
+print "d-i	pkgsel/include string " + " ".join(package_names)
