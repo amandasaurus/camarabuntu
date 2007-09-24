@@ -1,0 +1,11 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+26d5b86887c146abaa99e9691691373d  keyrings/ubuntu-archive-keyring.gpg
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFB2y7n9t0zAhD6TNERAuOlAJ9cPimHztfAA/4UzpVv4i+NlVGNlQCggjxr
+GOXMIeEh1NRnFVjFPkykm7o=
+=FCV9
+-----END PGP SIGNATURE-----

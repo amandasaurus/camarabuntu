@@ -1,0 +1,10 @@
+nic-restricted-firmware-2.6.10-5-386-di	standard	restricted/debian-installer
+nic-restricted-firmware-2.6.10-5-amd64-generic-di	standard	restricted/debian-installer
+nic-restricted-firmware-2.6.10-5-power3-di	standard	restricted/debian-installer
+nic-restricted-firmware-2.6.10-5-power4-di	standard	restricted/debian-installer
+nic-restricted-firmware-2.6.10-5-powerpc-di	standard	restricted/debian-installer
+nic-restricted-modules-2.6.10-5-386-di	standard	restricted/debian-installer
+nic-restricted-modules-2.6.10-5-amd64-generic-di	standard	restricted/debian-installer
+nic-restricted-modules-2.6.10-5-power3-di	standard	restricted/debian-installer
+nic-restricted-modules-2.6.10-5-power4-di	standard	restricted/debian-installer
+nic-restricted-modules-2.6.10-5-powerpc-di	standard	restricted/debian-installer

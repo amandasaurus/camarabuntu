@@ -1,0 +1,22 @@
+ubuntu-keyring (2005.01.07) hoary; urgency=low
+
+  * applied patch to create a ubuntu-keyring udeb (thanks to Colin)
+  * depend on gnupg
+  * call apt-key update (if apt-key is available)
+
+ -- Michael Vogt <mvo@debian.org>  Fri,  7 Jan 2005 14:28:29 +0100
+
+ubuntu-keyring (2005.01.04) hoary; urgency=low
+
+  * Add 1024D/FBB75451 Ubuntu CD Image Automatic Signing Key
+    <cdimage@ubuntu.com> to ubuntu-archive-keyring.
+
+ -- Colin Watson <cjwatson@canonical.com>  Wed,  5 Jan 2005 00:04:09 +0000
+
+ubuntu-keyring (2004.12.16) hoary; urgency=low
+
+  * Initial release with the Ubuntu Archive Signing Key in
+    the ubuntu-archive-keyring
+
+ -- Michael Vogt <mvo@debian.org>  Fri,  3 Dec 2004 22:10:41 +0100
+

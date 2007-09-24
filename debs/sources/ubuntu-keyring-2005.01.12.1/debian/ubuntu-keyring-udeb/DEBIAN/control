@@ -1,0 +1,13 @@
+Package: ubuntu-keyring-udeb
+Version: 2005.01.12.1
+Section: debian-installer
+Priority: optional
+Architecture: all
+Recommends: gpgv-udeb
+Installed-Size: 24
+Maintainer: Michael Vogt <michael.vogt@canonical.com>
+Source: ubuntu-keyring
+Description: GnuPG keys of the Ubuntu archive
+ The Ubuntu project digitally signs its Release files. This package
+ contains the archive keys used for that, in a minimal form for use
+ in the installer.
