@@ -2,8 +2,7 @@ The isolinux.cfg and related, are used in the inital boot process.
 They go into the isolinux directory of the CD image
 
 splash.pcx.gz is the background to the first thing you see when you boot up. It
-should be unzipped before adding it to the CD. The colour of the camara logo is
-brown in this version. It should be green
+should be unzipped before adding it to the CD.
 
 isolinux.cfg
 This file has all the menu options and what they do.
