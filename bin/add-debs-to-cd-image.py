@@ -315,5 +315,17 @@ for deb in debs:
         if key == " Package":
             package_names.append(value)
 
+print
+print
 print "Please add the following to the install pattern in the pressed file:"
 print "|".join(["~n^%s$" % package_name for package_name in package_names])
+
+print "For example change this line:"
+print "\td-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$"
+print "to this:"
+print "\td-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$|" + "|".join(["~n^%s$" % package_name for package_name in package_names])
+
+
+print
+print "And also add the following line:"
+print "\td-i pkgsel/include string " + " ".join(package_names)
