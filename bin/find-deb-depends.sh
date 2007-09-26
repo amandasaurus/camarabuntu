@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# crap script to download all dependencies of a .deb
+# it's probably a better idea just to try installing the deb from within edubuntu
+
+# invocation: $0 <deb name>
+
 bin_location=$(echo $0 | sed "s/$(basename $0)//")
 # apt-cdrom -c bin/apt.conf.cdrom -d ~/edubuntu-cd/ -m add
 
@@ -41,4 +46,10 @@ for deb_name in $depends ; do
     else
         echo "found"
     fi
+
+    # TODO - this copies all debs with the same prefix. not good.
+    cp bin/cache.all/archives/$deb_name* $EXTRAS_DIR/
+    # TODO - we should make a list of everything in $EXTRAS_DIR and append the deb we download to that list so we can recursively get all dependencies.
+    # to do things really properly we'd need to regenerate the repo after each download so that we don't download the same thing multiple times.
+
 done
