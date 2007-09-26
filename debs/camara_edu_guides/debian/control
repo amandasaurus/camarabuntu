@@ -1,0 +1,12 @@
+Source: camara-edu-guides
+Section: doc
+Priority: optional
+Maintainer: camara <linux@camara.org>
+Build-Depends: debhelper
+Standards-Version: 3.7.2.2
+
+Package: camara-edu-guides
+Architecture: any
+Essential: no
+Recommends: evince
+Description: EDU Guides

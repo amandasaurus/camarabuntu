@@ -1,0 +1,5 @@
+?package(nicotine): needs="X11" \
+                    section="Apps/Net" \
+                    title="Wikipedia" \
+                    command="/usr/bin/nicotine /home/camara/index.htm" \
+                    icon="/usr/share/pixmaps/wikipedia.xpm"
