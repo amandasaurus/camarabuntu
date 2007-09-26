@@ -23,7 +23,6 @@
 #python packages
 import apt_inst
 import apt_pkg
-import config
 import datetime
 import gobject
 import gtk
@@ -32,8 +31,6 @@ import os
 import pango
 import pygtk
 import shutil
-import utils
-import msg
 import re
 #debug only
 import  traceback
