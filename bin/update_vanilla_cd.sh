@@ -6,7 +6,6 @@
 camarabuntu_dir=$1
 cd_image_dir=$2
 
-set -x
 set -e
 
 ISO_DIRS="isolinux preseed"
