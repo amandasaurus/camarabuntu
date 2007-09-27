@@ -295,8 +295,12 @@ if status != 0:
     print output
 assert status == 0
 
-status, output = commands.getstatusoutput( "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey})
-assert status == 0
+cmd = "gpg --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey}
+print cmd
+status, output = commands.getstatusoutput( cmd )
+if status != 0:
+    print output
+    sys.exit(status)
 
 # Clean up
 os.chdir( old_cwd )

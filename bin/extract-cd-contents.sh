@@ -3,6 +3,20 @@
 ISO=$1
 DIR_NAME=$2
 
+function help {
+        echo "USAGE: $0 <path of .iso> <path to dir to extract to>"
+        exit
+}
+
+case $1 in 
+        "-h"|"--help")
+                help
+esac
+
+if [ ! "$ISO" -o ! "$DIR_NAME" ] ; then
+        help
+fi
+
 function cleanup {
   local status=$1
   sudo umount "${TMP_DIR}"
