@@ -3,7 +3,9 @@
 from optparse import OptionParser
 import os, shutil, tempfile, commands, glob, sys, re
 
-parser = OptionParser()
+usage = "%prog [options] <list of .debs>"
+
+parser = OptionParser(usage=usage)
 
 parser.add_option("-d", "--cd-dir",
                   dest="cddir", default=None,
@@ -24,12 +26,13 @@ parser.add_option( "--indices",
 
 (options, orig_debs) = parser.parse_args()
 
-debs = [os.path.abspath( deb ) for deb in orig_debs ]
+if not orig_debs or not options.cddir or not options.gpgkey or not options.indices:
+    parser.print_help()
+    sys.exit(1)
 
-assert options.cddir is not None
-assert options.gpgkey is not None
-assert options.indices is not None
 assert os.path.isdir( options.indices )
+
+debs = [os.path.abspath( deb ) for deb in orig_debs ]
 
 cddir = os.path.abspath( options.cddir )
 indices = os.path.abspath( options.indices )
