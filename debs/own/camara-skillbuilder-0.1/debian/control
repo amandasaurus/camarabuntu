@@ -1,12 +1,12 @@
-Source: camara-classroom-aids
+Source: camara-skillbuilder
 Section: doc
 Priority: optional
-Maintainer: camara <linux@camara.org>
+Maintainer: camara <linux@camara.ie>
 Build-Depends: debhelper
 Standards-Version: 3.7.2.2
 
-Package: camara-classroom-aids
+Package: camara-skillbuilder
 Architecture: any
 Essential: no
 Recommends: mozilla | netscape  
-Description: Classroom aids
+Description: Skillbuilder
