@@ -22,7 +22,7 @@ $base_dir/add-debs-to-cd-image.py --cd-dir=$EXTRACTED_CD_DIR --gpg-key=$GPGKEY $
 $base_dir/make-cd-iso.py --iso-file=$OUTPUT_ISO --dir=$EXTRACTED_CD_DIR --name=Camarabuntu
 
 sudo modprobe kqemu
-sudo mknod /dev/kqemu c 250 0
+[ -e /dev/kqemu ] || sudo mknod /dev/kqemu c 250 0
 sudo chmod 666 /dev/kqemu
 
 qemu -cdrom $OUTPUT_ISO -hda $QEMU_HDA -boot d
