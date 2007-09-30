@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os
+import os, re
 
 parser = OptionParser()
 
@@ -16,14 +16,41 @@ deb = debs[0]
 
 assert len(options.repos) > 0
 
+class Dependency():
+    def __init__(self, package_name, version, relation):
+        self.package_name = package_name
+        self.version = version
+        self.relation = relation
+
+    def __str__(self):
+        return "%s (%s %s)" % (self.package_name, self.relation, self.version)
+
+    def __repr__(self):
+        return "Dependency( %r, %r, %r )" % (self.package_name, self.version, self.relation )
+
 class Package():
     def __init__(self):
         self.name = None
         self.version = None
+        self.depends_line = None
         pass
 
-    def __repr__(self):
-        return "Package: name: %s version: %s" % (self.name, self.version)
+    def parse_dependencies(self, depends_line):
+        self.depends = []
+
+        packages = depends_line.split( "," )
+        depends_re = re.compile( r"(?P<package_name>\S*) \((?P<relation><<|<=|=|>=|>>) (?P<version>\S*)\)" )
+        for package in packages:
+            package = package.strip()
+            result = depends_re.search(package)
+            if result is None:
+                # plain old depend
+                self.depends.append( package )
+            else:
+                self.depends.append( Dependency( result.group('package_name'), result.group('version'), result.group('relation') ) )
+
+        print repr( self.depends )
+
 
 class Repository():
     def __init__(self, path):
@@ -36,7 +63,6 @@ class Repository():
         for line in open( "%s/binary-i386/Packages" % self.path ):
             line = line.rstrip("\n")
             if line == "":
-                print repr(package)
                 self.packages.append(package)
                 packages = Package()
                 continue
@@ -45,10 +71,12 @@ class Repository():
             key, value = line.split( ": ", 1 )
             maps = [ [ 'Package', 'name' ],
                      [ 'Version', 'version' ],
-                     [ 'Depends', 'depends' ] ]
+                     ]
             for key_name, attr in maps:
                 if key == key_name:
                     setattr( package, attr, value )
+            if key == 'Depends':
+                package.parse_dependencies( value )
 
 
 
