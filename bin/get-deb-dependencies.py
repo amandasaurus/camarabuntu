@@ -72,19 +72,46 @@ class Package():
 
 
     def parse_dependencies(self, depends_line):
-        self.depends = self.parse_dependencies_rec( depends_line )
-
-
-    def parse_dependencies_rec( self,  depends_line ):
         depends = []
 
         # Assuming that "," is more important than "|"
+        # and that 
         packages = depends_line.split( "," )
         for package in packages:
             package = package.strip()
-            depends.append( Dependency( string = package ) )
-        
-        return depends
+            alts = [ s.strip() for s in package.split("|") ]
+            if len(alts) == 1:
+                # just a normal package line
+                depends.append( Dependency( string = package ) )
+            else:
+                depends.append( OrDependencyList( *[ Dependency(string=alt) for alt in alts ] ) )
+
+        self.depends = AndDependencyList( *depends )
+
+class DependencyList():
+    def __init__(self):
+        pass
+
+class AndDependencyList(DependencyList):
+    def __init__(self, *dependencies):
+        self.dependencies = dependencies
+
+    def __str__(self):
+        return ", ".join( [ str(dep) for dep in self.dependencies ] )
+
+    def __repr__(self):
+        return "AndDependencyList( %s )" % ", ".join( [ repr(dep) for dep in self.dependencies ] )
+
+class OrDependencyList(DependencyList):
+    def __init__(self, *dependencies):
+        self.dependencies = dependencies
+
+    def __str__(self):
+        #print repr(self.dependencies)
+        return " | ".join( [ str(dep) for dep in self.dependencies ] )
+
+    def __repr__(self):
+        return "OrDependencyList( %s )" % ", ".join( [ repr(dep) for dep in self.dependencies ] )
 
 
 class Repository():
@@ -114,17 +141,12 @@ class Repository():
                 package.parse_dependencies( value )
 
 
-
-
-
-
-
 for repo in options.repos:
     r = Repository(repo)
 
 package = Package( filename=deb )
 print repr(package.depends)
-print ", ".join([str(dep) for dep in package.depends])
+print str(package.depends)
 
 
         
