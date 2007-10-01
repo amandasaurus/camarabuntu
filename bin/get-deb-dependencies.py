@@ -176,8 +176,13 @@ class OrDependencyList(DependencyList):
 
 
 class Repository():
-    def __init__(self, path):
-        self.path = os.path.abspath(path)
+    def __init__(self, uri):
+        if os.path.isdir( uri ):
+            self.path = os.path.abspath( uri )
+        elif uri[0:7] == "http://":
+            print "got a url"
+            self.url = uri
+
         self.packages = []
         self.__scan_packages()
 
