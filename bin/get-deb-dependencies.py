@@ -19,29 +19,29 @@ assert len(options.repos) > 0
 class Dependency():
     def __init__(self, string=None, package_name=None, version=None, relation=None):
         if string is not None:
-            depends_re = re.compile( r"(?P<package_name>\S*) \((?P<relation><<|<=|=|>=|>>) (?P<version>\S*)\)" )
+            depends_re = re.compile( r"(?P<name>\S*) \((?P<relation><<|<=|=|>=|>>) (?P<version>\S*)\)" )
             result = depends_re.search( string )
             if result is None:
-                self.package_name = string
+                self.name = string
                 self.version = None
                 self.relation = None
             else:
-                self.package_name = result.group('package_name')
+                self.name = result.group('name')
                 self.version = result.group('version')
                 self.relation = result.group('relation')
         else:
-            self.package_name = package_name
+            self.name = name
             self.version = version
             self.relation = relation
 
     def __str__(self):
         if self.relation is None and self.version is None:
-            return self.package_name
+            return self.name
         else:
-            return "%s (%s %s)" % (self.package_name, self.relation, self.version)
+            return "%s (%s %s)" % (self.name, self.relation, self.version)
 
     def __repr__(self):
-        return "Dependency( package_name=%r, version=%r, relation=%r )" % (self.package_name, self.version, self.relation )
+        return "Dependency( name=%r, version=%r, relation=%r )" % (self.name, self.version, self.relation )
 
 class Package():
     def __init__(self, filename=None):
@@ -71,11 +71,15 @@ class Package():
                 self.parse_dependencies( value )
 
 
+    def __str__(self):
+        #print repr(self.dependencies)
+        return " | ".join( [ str(dep) for dep in self.dependencies ] )
+
     def parse_dependencies(self, depends_line):
         depends = []
 
         # Assuming that "," is more important than "|"
-        # and that 
+        # and that we ca only nest them 2 deep at most
         packages = depends_line.split( "," )
         for package in packages:
             package = package.strip()
@@ -87,6 +91,14 @@ class Package():
                 depends.append( OrDependencyList( *[ Dependency(string=alt) for alt in alts ] ) )
 
         self.depends = AndDependencyList( *depends )
+
+    def fulfills(self, dep):
+        """Returns true iff this package can satify the dependency dep"""
+        if dep.name != self.name:
+            return False
+
+        pass
+    
 
 class DependencyList():
     def __init__(self):
@@ -139,6 +151,18 @@ class Repository():
                     setattr( package, attr, value )
             if key == 'Depends':
                 package.parse_dependencies( value )
+
+    def __contains__(self, package):
+        if isinstance(package, str):
+            # looking for package name
+        elif isinstance(package, Package):
+            # looking for an actual package
+            return package in self.dependencies
+        elif isinstance( package, Dependency ):
+            # looking for a version
+            possibilities = [ dep for dep in self.dependencies if deb.name = package.name ]
+            print repr( possibilities )
+        
 
 
 for repo in options.repos:
