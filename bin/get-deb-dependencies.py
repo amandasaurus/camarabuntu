@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os, re, commands
+import os, re, commands, copy
 
 parser = OptionParser()
 
@@ -43,6 +43,12 @@ class Dependency():
     def __repr__(self):
         return "Dependency( name=%r, version=%r, relation=%r )" % (self.name, self.version, self.relation )
 
+    def __eq__(self, other):
+        return self.name == other.name and self.version == other.version and self.relation == other.version
+
+    def __hash__(self):
+        return hash((self.name, self.version, self.relation))
+
 class Package():
     def __init__(self, filename=None):
         self.name = None
@@ -66,14 +72,18 @@ class Package():
             line = line.rstrip()
             if line[0] == " ":
                 continue
-            if line.startswith("Depends: "):
-                key, value = line.split( ": ", 1 )
+            bits = line.split(": ", 1)
+            if len(bits) != 2:
+                continue
+            key, value = bits
+            if key == "Depends":
                 self.parse_dependencies( value )
+            if key == "Version":
+                self.version_string = value
 
 
     def __str__(self):
-        #print repr(self.dependencies)
-        return " | ".join( [ str(dep) for dep in self.dependencies ] )
+        return self.name
 
     def parse_dependencies(self, depends_line):
         depends = []
@@ -92,22 +102,65 @@ class Package():
 
         self.depends = AndDependencyList( *depends )
 
-    def fulfills(self, dep):
+    def fulfils(self, dep):
         """Returns true iff this package can satify the dependency dep"""
         if dep.name != self.name:
+            # Obviously
             return False
 
-        pass
+        if dep.version is None:
+            # we don't care about version
+            return True
+
+        # version code from here:
+        # http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
+        version_re = re.compile("""((?P<epoch>\d+):)?(?P<upstream>[-0-9.+:]+)(-(?P<debian>[a-zA-Z0-9+.]+)?(ubuntu(?P<ubuntu>[a-zA-Z0-9+.]+))?)?""" )
+
+        match = version_re.match( self.version_string )
+        assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version_string)
+
+    def check_for_depenencies(self, repos):
+        assert isinstance(self.depends, AndDependencyList)
+
+        unfulfiled = set([dep for dep in self.depends])
+        fulfiled_deps = set()
+
+        while len(unfulfiled) > 0:
+            dependency = unfulfiled.pop()
+
+            fulfiled = False
+
+            for repo in repos:
+                if fulfiled:
+                    break
+                for package in repo.packages:
+                    if fulfiled:
+                        break
+                    if isinstance( dependency, OrDependencyList ):
+                        if any([package.fulfils(dep) for dep in dependency] ):
+                            #print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
+                            fulfiled = True
+                            break
+                    else:
+                        if package.fulfils(dependency):
+                            #print "package %s fulfils the dependency %s" % (package, dependency)
+                            fulfiled = True
+                            break
+            
+            if not fulfiled:
+                print "Dependency %s not met" % dependency
     
 
 class DependencyList():
-    def __init__(self):
-        pass
-
-class AndDependencyList(DependencyList):
     def __init__(self, *dependencies):
         self.dependencies = dependencies
 
+    def __iter__(self):
+        return self.dependencies.__iter__()
+                
+
+
+class AndDependencyList(DependencyList):
     def __str__(self):
         return ", ".join( [ str(dep) for dep in self.dependencies ] )
 
@@ -115,11 +168,7 @@ class AndDependencyList(DependencyList):
         return "AndDependencyList( %s )" % ", ".join( [ repr(dep) for dep in self.dependencies ] )
 
 class OrDependencyList(DependencyList):
-    def __init__(self, *dependencies):
-        self.dependencies = dependencies
-
     def __str__(self):
-        #print repr(self.dependencies)
         return " | ".join( [ str(dep) for dep in self.dependencies ] )
 
     def __repr__(self):
@@ -134,17 +183,18 @@ class Repository():
 
     def __scan_packages(self):
         package = Package()
+        self.packages = []
         for line in open( "%s/binary-i386/Packages" % self.path ):
             line = line.rstrip("\n")
             if line == "":
                 self.packages.append(package)
-                packages = Package()
+                package = Package()
                 continue
             if line[0] == " ":
                 continue
             key, value = line.split( ": ", 1 )
             maps = [ [ 'Package', 'name' ],
-                     [ 'Version', 'version' ],
+                     [ 'Version', 'version_string' ],
                      ]
             for key_name, attr in maps:
                 if key == key_name:
@@ -155,22 +205,19 @@ class Repository():
     def __contains__(self, package):
         if isinstance(package, str):
             # looking for package name
+            pass
         elif isinstance(package, Package):
             # looking for an actual package
             return package in self.dependencies
         elif isinstance( package, Dependency ):
             # looking for a version
-            possibilities = [ dep for dep in self.dependencies if deb.name = package.name ]
+            possibilities = [ dep for dep in self.dependencies if deb.name == package.name ]
             print repr( possibilities )
         
 
-
-for repo in options.repos:
-    r = Repository(repo)
+repos = [Repository(r) for r in options.repos]
 
 package = Package( filename=deb )
-print repr(package.depends)
-print str(package.depends)
 
-
+package.check_for_depenencies(repos)
         
