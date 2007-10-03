@@ -1,17 +1,20 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os, re, commands, copy
+import os, re, commands, copy, urllib, gzip, tempfile
 
 parser = OptionParser()
 
 parser.add_option( "-r", "--repo", "--repository",
                    dest="repos", action="append", help="Repository path", default=[] )
 
+parser.add_option( "-w", "--web-repo", "--web-repository",
+                   dest="webrepo", action="append", help="URL of web repository", default=[] )
+
 
 (options, debs) = parser.parse_args()
 
-assert len(debs) == 1
+assert len(debs) == 1, "You must provide exactly one deb on the command line"
 deb = debs[0]
 
 assert len(options.repos) > 0
@@ -177,16 +180,48 @@ class OrDependencyList(DependencyList):
 
 class Repository():
     def __init__(self, uri):
+        self.packages = []
         if os.path.isdir( uri ):
             self.path = os.path.abspath( uri )
+            self.__scan_local_packages()
         elif uri[0:7] == "http://":
-            print "got a url"
             self.url = uri
+            self.__scan_remote_packages()
 
+
+    def __scan_remote_packages(self):
+        # check for the repo file
+        tmpfile_fp, tmpfile = tempfile.mkstemp(suffix=".gz", prefix="web-repo-")
+        urllib.urlretrieve( self.url+ "/binary-i386/Packages.gz", filename=tmpfile )
+        #releases_file = gzip.GzipFile(filename=None, fileobj=urllib.urlopen( "%s/binary-i386/Packages.gz" % self.url ) )
+        self.__scan_packages( gzip.open( tmpfile ) )
+    
+    def __scan_packages(self, releases_fp):
+        package = Package()
         self.packages = []
-        self.__scan_packages()
+        for line in releases_fp:
+            line = line.rstrip("\n")
+            if line == "":
+                self.packages.append(package)
+                package = Package()
+                continue
+            if line[0] == " ":
+                continue
+            bits = line.split(": ", 1)
+            if len(bits) != 2:
+                continue
+            key, value = bits
+            maps = [ [ 'Package', 'name' ],
+                     [ 'Version', 'version_string' ],
+                     ]
+            for key_name, attr in maps:
+                if key == key_name:
+                    setattr( package, attr, value )
+            if key == 'Depends':
+                package.parse_dependencies( value )
 
-    def __scan_packages(self):
+
+    def __scan_local_packages(self):
         package = Package()
         self.packages = []
         for line in open( "%s/binary-i386/Packages" % self.path ):
@@ -222,7 +257,13 @@ class Repository():
 
 repos = [Repository(r) for r in options.repos]
 
+remote_repos = [Repository(r) for r in options.webrepo]
+
 package = Package( filename=deb )
 
+print "Checking local repos..."
 package.check_for_depenencies(repos)
+
+print "Checking remote..."
+package.check_for_depenencies(remote_repos)
         
