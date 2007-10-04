@@ -122,37 +122,68 @@ class Package():
         match = version_re.match( self.version_string )
         assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version_string)
 
-    def check_for_depenencies(self, repos):
+    def unfulfilled_depenencies(self, local_repos, remote_repos):
         assert isinstance(self.depends, AndDependencyList)
 
+        # Start off with all our depends. We have to keep going until we this
+        # is empty.
         unfulfiled = set([dep for dep in self.depends])
         fulfiled_deps = set()
 
         while len(unfulfiled) > 0:
             dependency = unfulfiled.pop()
 
-            fulfiled = False
+            fulfiled_locally = False
 
-            for repo in repos:
-                if fulfiled:
+            for repo in local_repos:
+                if fulfiled_locally:
                     break
                 for package in repo.packages:
-                    if fulfiled:
+                    if fulfiled_locally:
                         break
                     if isinstance( dependency, OrDependencyList ):
                         if any([package.fulfils(dep) for dep in dependency] ):
                             #print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
-                            fulfiled = True
+                            fulfiled_locally = True
                             break
                     else:
                         if package.fulfils(dependency):
                             #print "package %s fulfils the dependency %s" % (package, dependency)
-                            fulfiled = True
+                            fulfiled_locally = True
+                            break
+
+            if fulfiled_locally:
+                # Don't bother looking at the remote repositories if we can already fulfill locally
+                print "The dependency %s can be fulfilled locally" % dependency
+                continue # to the next package
+
+            # we know we need to look on the web for this dependency
+
+            fulfiled_remotely = False
+            remote_repo = None
+            for repo in remote_repos:
+                if fulfiled_remotely:
+                    break
+                for package in repo.packages:
+                    if fulfiled_remotely:
+                        break
+                    if isinstance( dependency, OrDependencyList ):
+                        if any([packages.fulfils(dep) for dep in dependency] ):
+                            fulfiled_remotely = True
+                            remote_repo = repo
+                            break
+                    else:
+                        if package.fulfils(dependency):
+                            fulfiled_remotely = True
+                            remote_repo = repo
                             break
             
-            if not fulfiled:
-                print "Dependency %s not met" % dependency
-    
+            if fulfiled_remotely:
+                print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
+
+            if not fulfiled_remotely and not fulfiled_locally:
+                print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
+
 
 class DependencyList():
     def __init__(self, *dependencies):
