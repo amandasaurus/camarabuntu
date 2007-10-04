@@ -313,7 +313,7 @@ if status != 0:
     print output
 assert status == 0
 
-cmd = "gpg --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey}
+cmd = "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey}
 print cmd
 p = subprocess.Popen(cmd, shell=True)
 stdout, stderr = p.communicate(input=options.passphrase)
