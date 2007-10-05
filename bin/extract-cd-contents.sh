@@ -28,6 +28,8 @@ trap cleanup SIGINT SIGTERM
 
 if [ ! -d "${DIR_NAME}" ] ; then
     mkdir -p "${DIR_NAME}" || exit $?
+else
+    rm -rf "${DIR_NAME}"
 fi
 
 TMP_DIR=$(mktemp -t -d cd-image-XXXXXX)

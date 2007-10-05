@@ -1,0 +1,3 @@
+libflashplayer.so /usr/lib/flashplugin-nonfree
+flashplayer.xpt /usr/lib/flashplugin-nonfree
+
