@@ -212,12 +212,13 @@ class Repository():
         elif uri[0:7] == "http://":
             self.type = Repository.REMOTE_REPOSITORY
             self.url = uri
+            self.url, self.dist, self.component = uri.split( " " )
             self.__scan_remote_packages(download_callback_func=download_callback_func)
 
     def __scan_remote_packages(self, download_callback_func=None):
         # check for the repo file
         tmpfile_fp, tmpfile = tempfile.mkstemp(suffix=".gz", prefix="web-repo-")
-        urllib.urlretrieve( self.url+ "/binary-i386/Packages.gz", filename=tmpfile, reporthook=download_callback_func )
+        urllib.urlretrieve( self.url+ "/dists/" + self.dist + "/" +self.component + "/binary-i386/Packages.gz", filename=tmpfile, reporthook=download_callback_func )
         self.__scan_packages( gzip.open( tmpfile ) )
         
     
