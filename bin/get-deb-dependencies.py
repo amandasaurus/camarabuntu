@@ -8,7 +8,7 @@ parser = OptionParser()
 parser.add_option( "-r", "--repo", "--repository",
                    dest="repos", action="append", help="Repository path", default=[] )
 
-parser.add_option( "-w", "--web-repo", "--web-repository",
+parser.add_option( "-w", "--web-repo", "--web-repository", "--remote-repo", "--remote-repository",
                    dest="webrepo", action="append", help="URL of web repository", default=[] )
 
 
