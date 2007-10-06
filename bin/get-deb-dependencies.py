@@ -219,13 +219,12 @@ class Repository():
             self.url = uri
             self.__scan_remote_packages()
 
-
     def __scan_remote_packages(self):
         # check for the repo file
         tmpfile_fp, tmpfile = tempfile.mkstemp(suffix=".gz", prefix="web-repo-")
         urllib.urlretrieve( self.url+ "/binary-i386/Packages.gz", filename=tmpfile )
-        #releases_file = gzip.GzipFile(filename=None, fileobj=urllib.urlopen( "%s/binary-i386/Packages.gz" % self.url ) )
         self.__scan_packages( gzip.open( tmpfile ) )
+        
     
     def __scan_packages(self, releases_fp):
         package = Package()
@@ -255,23 +254,7 @@ class Repository():
     def __scan_local_packages(self):
         package = Package()
         self.packages = []
-        for line in open( "%s/binary-i386/Packages" % self.path ):
-            line = line.rstrip("\n")
-            if line == "":
-                self.packages.append(package)
-                package = Package()
-                continue
-            if line[0] == " ":
-                continue
-            key, value = line.split( ": ", 1 )
-            maps = [ [ 'Package', 'name' ],
-                     [ 'Version', 'version_string' ],
-                     ]
-            for key_name, attr in maps:
-                if key == key_name:
-                    setattr( package, attr, value )
-            if key == 'Depends':
-                package.parse_dependencies( value )
+        self.__scan_packages( open( self.path + "/binary-i386/Packages" ) )
 
     def __contains__(self, package):
         if isinstance(package, str):
@@ -284,11 +267,18 @@ class Repository():
             # looking for a version
             possibilities = [ dep for dep in self.dependencies if deb.name == package.name ]
             print repr( possibilities )
-        
+
+    def __getitem__(self, package_name):
+        assert self.packages is not None and len(self.packages) > 0, "Attempted to get a package from a repository that has no packages"
+        for pkg in self.packages:
+            if pkg.name = package_name:
+                return pkg
 
 repos = [Repository(r) for r in options.repos]
 
-remote_repos = [Repository(r) for r in options.webrepo]
+#remote_repos = [Repository(r) for r in options.webrepo]
+universe = Repository()
+universe.__scan_packages( gzip.open( tmpfile ) )
 
 package = Package( filename=deb )
 
