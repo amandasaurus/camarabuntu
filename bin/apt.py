@@ -1,37 +1,37 @@
-import os, re, commands, copy, urllib, gzip, tempfile
+import os, re, commands, copy, urllib, gzip, tempfile, operator
 
 class Dependency():
-    def __init__(self, string=None, package_name=None, version=None, relation=None):
+    def __init__(self, string=None, package_name=None, version_string=None, relation=None):
         if string is not None:
             depends_re = re.compile( r"(?P<name>\S*) \((?P<relation><<|<=|=|>=|>>) (?P<version>\S*)\)" )
             result = depends_re.search( string )
             if result is None:
                 self.name = string
-                self.version = None
+                self.version_string = None
                 self.relation = None
             else:
                 self.name = result.group('name')
-                self.version = result.group('version')
+                self.version_string = result.group('version')
                 self.relation = result.group('relation')
         else:
             self.name = name
-            self.version = version
+            self.version_string = version_string
             self.relation = relation
 
     def __str__(self):
-        if self.relation is None and self.version is None:
+        if self.relation is None and self.version_string is None:
             return self.name
         else:
-            return "%s (%s %s)" % (self.name, self.relation, self.version)
+            return "%s (%s %s)" % (self.name, self.relation, self.version_string)
 
     def __repr__(self):
-        return "Dependency( name=%r, version=%r, relation=%r )" % (self.name, self.version, self.relation )
+        return "Dependency( name=%r, version_string=%r, relation=%r )" % (self.name, self.version_string, self.relation )
 
     def __eq__(self, other):
-        return self.name == other.name and self.version == other.version and self.relation == other.version
+        return self.name == other.name and self.version_string == other.version_string and self.relation == other.version_string
 
     def __hash__(self):
-        return hash((self.name, self.version, self.relation))
+        return hash((self.name, self.version_string, self.relation))
 
 class Package():
     def __init__(self, filename=None):
@@ -94,7 +94,7 @@ class Package():
             return False
 
         if dep.version is None:
-            # we don't care about version
+            # for this dependency the version is unimportant
             return True
 
         # version code from here:
@@ -104,67 +104,58 @@ class Package():
         match = version_re.match( self.version_string )
         assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version_string)
 
-    def unfulfilled_depenencies(self, local_repos, remote_repos):
-        assert isinstance(self.depends, AndDependencyList)
+        dep_match = version_re.match( dep.version_string )
+        assert dep_match is not None, "The version string for depenency %s does not match the version regular expression" % dep
 
-        # Start off with all our depends. We have to keep going until we this
-        # is empty.
-        unfulfiled = set([dep for dep in self.depends])
-        fulfiled_deps = set()
+        relation_to_func = {
+            '<<': operator.lt,
+            '<=': operator.le,
+            '=' : operator.eq,
+            '>=': operator.ge,
+            '>>': operator.gt
+        }
 
-        while len(unfulfiled) > 0:
-            dependency = unfulfiled.pop()
+        assert dep.relation in relation_to_func.keys(), "The depenency %s has a relation of %s, which is not in the known relations" % (dep, dep.relation)
+        op = relation_to_func[dep.relation]
 
-            fulfiled_locally = False
+        if int(match.group('epoch')) != int(dep_match.group('epoch')):
+            return op(int(match.group('epoch')), int(dep_match.group('epoch')))
 
-            for repo in local_repos:
-                if fulfiled_locally:
-                    break
-                for package in repo.packages:
-                    if fulfiled_locally:
-                        break
-                    if isinstance( dependency, OrDependencyList ):
-                        if any([package.fulfils(dep) for dep in dependency] ):
-                            #print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
-                            fulfiled_locally = True
-                            break
-                    else:
-                        if package.fulfils(dependency):
-                            #print "package %s fulfils the dependency %s" % (package, dependency)
-                            fulfiled_locally = True
-                            break
 
-            if fulfiled_locally:
-                # Don't bother looking at the remote repositories if we can already fulfill locally
-                print "The dependency %s can be fulfilled locally" % dependency
-                continue # to the next package
 
-            # we know we need to look on the web for this dependency
+        # From: http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
+        # The upstream_version and debian_revision parts are compared by the
+        # package management system using the same algorithm:
+        
+        # The strings are compared from left to right.
+        #
+        # First the initial part of each string consisting entirely of
+        # non-digit characters is determined. These two parts (one of which may
+        # be empty) are compared lexically. If a difference is found it is
+        # returned. The lexical comparison is a comparison of ASCII values
+        # modified so that all the letters sort earlier than all the
+        # non-letters.
+        #
+        # Then the initial part of the remainder of each string which consists
+        # entirely of digit characters is determined. The numerical values of
+        # these two parts are compared, and any difference found is returned as
+        # the result of the comparison. For these purposes an empty string
+        # (which can only occur at the end of one or both version strings being
+        # compared) counts as zero.
+        #
+        # These two steps (comparing and removing initial non-digit strings and
+        # initial digit strings) are repeated until a difference is found or
+        # both strings are exhausted. 
 
-            fulfiled_remotely = False
-            remote_repo = None
-            for repo in remote_repos:
-                if fulfiled_remotely:
-                    break
-                for package in repo.packages:
-                    if fulfiled_remotely:
-                        break
-                    if isinstance( dependency, OrDependencyList ):
-                        if any([packages.fulfils(dep) for dep in dependency] ):
-                            fulfiled_remotely = True
-                            remote_repo = repo
-                            break
-                    else:
-                        if package.fulfils(dependency):
-                            fulfiled_remotely = True
-                            remote_repo = repo
-                            break
-            
-            if fulfiled_remotely:
-                print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
+        # Check the upstream version
 
-            if not fulfiled_remotely and not fulfiled_locally:
-                print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
+        # check the debian version
+
+        # check the ubuntu version
+
+
+        raise NotImplementedError, "The code for comparing versions has finished without returning. This means the author did not fully understand the debian method of comparing versions or this is a funny deb. The deb: %r. The depenency: %r" % (self, dep)
+
 
     def save(self, directory=None):
         if directory == None:
@@ -173,6 +164,7 @@ class Package():
         assert self.filename is not None, "Attempted to save a package with filename = None"
         assert self.filename[0:7], "Attempted to save a package with a non-http filename. You can't save local packages"
     
+        print "Downloading "+str(self)
         urllib.urlretrieve( self.filename, os.path.join( directory, os.path.basename( self.filename ) ) )
 
 
@@ -277,3 +269,99 @@ class Repository():
             if pkg.name == package_name:
                 return pkg
         return None
+
+
+
+def dl_depenencies(package, local_repos, remote_repos):
+    if isinstance(package, str):
+        # deb is a package name
+        options = [r for r in local_repos if r[package] is not None]
+        assert len(options) <= 1, "More than one local repository has the packages %s, don't know what to do" % packages
+        if len(options) == 0:
+            # not found locally, try looking remotely
+
+            remote_options = [r for r in remote_repos if r[package] is not None]
+            
+            assert len(remote_options) != 0, "package %s is not available in local or remote repositories"
+            assert len(remote_options) == 1, "more than one option to download from, there should be only one"
+            
+            package = remote_options[0][package]
+        else:
+            package = options[0][package]
+
+    assert isinstance(package, Package)
+
+    # Start off with all our depends. We have to keep going until we this
+    # is empty.
+    unfulfiled = set(package.depends)
+    fulfiled_deps = set()
+
+    debs_to_download = set()
+
+    while len(unfulfiled) > 0:
+        dependency = unfulfiled.pop()
+        print "Looking at dependency %s" % dependency
+
+        fulfiled_locally = False
+
+        for repo in local_repos:
+            if fulfiled_locally:
+                break
+            for package in repo.packages:
+                if fulfiled_locally:
+                    break
+                if isinstance( dependency, OrDependencyList ):
+                    if any([package.fulfils(dep) for dep in dependency] ):
+                        print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
+                        fulfiled_locally = True
+                        break
+                else:
+                    if package.fulfils(dependency):
+                        print "package %s fulfils the dependency %s" % (package, dependency)
+                        fulfiled_locally = True
+                        break
+
+        if fulfiled_locally:
+            # Don't bother looking at the remote repositories if we can already fulfill locally
+            print "The dependency %s can be fulfilled locally" % dependency
+            continue # to the next package
+
+        # check if one of the debs we're going to download will fulfil this repository. Can help with cycles
+        if any([deb.fulfils(dependency) for deb in debs_to_download]):
+            print "The dependency %s will be fulfilled by one of the debs we are going to download" % dependency
+            continue # to next dependency
+
+        # we know we need to look on the web for this dependency
+
+        fulfiled_remotely = False
+        remote_repo = None
+        for repo in remote_repos:
+            if fulfiled_remotely:
+                break
+            for package in repo.packages:
+                if fulfiled_remotely:
+                    break
+                if isinstance( dependency, OrDependencyList ):
+                    if any([package.fulfils(dep) for dep in dependency] ):
+                        debs_to_download.add(package)
+                        fulfiled_remotely = True
+                        remote_repo = repo
+                        break
+                else:
+                    if package.fulfils(dependency):
+                        debs_to_download.add(package)
+                        fulfiled_remotely = True
+                        remote_repo = repo
+                        break
+        
+        if fulfiled_remotely:
+            print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
+
+        if not fulfiled_remotely and not fulfiled_locally:
+            print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
+
+        print "The following packages need to be downloaded: "+str(debs_to_download)
+
+    # now download our debs
+    for deb in debs_to_download:
+        deb.save()
