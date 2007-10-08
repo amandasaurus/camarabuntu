@@ -99,6 +99,7 @@ class Package():
 
         # version code from here:
         # http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
+        # TODO exactly one hypen => split into debian version. >1 hypen => all but last hypen go into upstrream
         version_re = re.compile("""((?P<epoch>\d+):)?(?P<upstream>[-0-9.+:]+)(-(?P<debian>[a-zA-Z0-9+.]+)?(ubuntu(?P<ubuntu>[a-zA-Z0-9+.]+))?)?""" )
 
         match = version_re.match( self.version_string )
