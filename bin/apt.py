@@ -103,8 +103,8 @@ class Package():
         version_re = re.compile("""
             ((?P<epoch>\d+):)?
             (
-                    ( (?P<upstream1>[-0-9.+:]+) - (?P<debian1>[a-zA-Z0-9+.]+) ( ubuntu (?P<ubuntu1>[a-zA-Z0-9+.]+) )? )
-                |   ( (?P<upstream2>[0-9.+:]+) ( - (?P<debian2>[a-zA-Z0-9+.]+) ( ubuntu (?P<ubuntu2>[a-zA-Z0-9+.]+) )? )? )
+                    ( (?P<upstream1>[-0-9.+:]+) - (?P<debian1>[a-zA-Z0-9+.]+) )
+                |   ( (?P<upstream2>[0-9.+:]+) ( - (?P<debian2>[a-zA-Z0-9+.]+) )? )
             )
             """, re.VERBOSE )
 
@@ -160,16 +160,28 @@ class Package():
         pkg_version_dict = match.groupdict()
         if pkg_version_dict['upstream1'] is not None:
             pkg_version_dict['upstream'] = pkg_version_dict['upstream1']
+            pkg_version_dict['debian'] = pkg_version_dict['debian1']
         else:
             pkg_version_dict['upstream'] = pkg_version_dict['upstream2']
+            pkg_version_dict['debian'] = pkg_version_dict['debian2']
         dep_version_dict = match.groupdict()
         if dep_version_dict['upstream1'] is not None:
             dep_version_dict['upstream'] = dep_version_dict['upstream1']
+            dep_version_dict['debian'] = dep_version_dict['debian1']
         else:
             dep_version_dict['upstream'] = dep_version_dict['upstream2']
+            dep_version_dict['debian'] = dep_version_dict['debian2']
 
-        print repr(pkg_version_dict)
-        print repr(dep_version_dict)
+        # Clean up the debian/ubuntu version numbering
+        assert re.match( "\d*(ubuntu\d*)?", pkg_version_dict['debian'] ), "Debian version (%s) for the package %s does not match the ubuntu version format" % (pkg_version_dict['debian'], self)
+        assert re.match( "\d*(ubuntu\d*)?", dep_version_dict['debian'] ), "Debian version (%s) for the depenency %s does not match the ubuntu    version format" % (dep_version_dict['debian'], dep)
+
+        if re.match( "\d*ubuntu\d*", pkg_version_dict['debian'] ):
+            pkg_version_dict['debian'], pkg_version_dict['ubuntu'] = re.split("ubuntu", pkg_version_dict['debian'])
+            print repr(pkg_version_dict)
+        if re.match("\d*ubuntu\d*", dep_version_dict['debian'] ):
+            dep_version_dict['debian'], dep_version_dict['ubuntu'] = re.split("ubuntu", dep_version_dict['debian'])
+            print repr(dep_version_dict)
 
         # Check the upstream version
         pkg_str = pkg_version_dict['upstream']
@@ -178,14 +190,37 @@ class Package():
 
         digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_str) if s != ""]
         digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_str) if s != ""]
-        print repr(digits_non_digits_pkg)
-        print repr(digits_non_digits_dep)
+        #print repr(digits_non_digits_pkg)
+        #print repr(digits_non_digits_dep)
 
+        if len(digits_non_digits_dep) <= len(digits_non_digits_dep):
+            smaller = digits_non_digits_dep
+            longer = digits_non_digits_pkg
+        else:
+            smaller = digits_non_digits_pkg
+            longer = digits_non_digits_dep
+
+        for index, el in enumerate(smaller):
+            # check if they are different
+            if el != longer[index]:
+                return op(el, longer[index])
 
         # check the debian version
+        if dep_version_dict['debian'] is None:
+            # we don't care about the debian version for this depenency
+            #print "debian version is irrelevant for %s" % dep
+            return True # cause if we've got to here, it's OK            
+        else:
+            if pkg_version_dict['debian'] != dep_version_dict['debian']:
+                return op(int(pkg_version_dict['debian']), int(dep_version_dict['debian']))
 
         # check the ubuntu version
-
+        if dep_version_dict['ubuntu'] is None:
+            #print "We don't care about ubuntu version for %s" % dep
+            return True
+        else:
+            if pkg_version_dict['ubuntu'] != dep_version_dict['ubuntu']:
+                return op(int(pkg_version_dict['ubuntu']), int(dep_version_dict['ubuntu']))
 
         raise NotImplementedError, "The code for comparing versions has finished without returning. This means the author did not fully understand the debian method of comparing versions or this is a funny deb. The deb: %r. The depenency: %r" % (self, dep)
 
