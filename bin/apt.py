@@ -99,14 +99,20 @@ class Package():
 
         # version code from here:
         # http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
-        # TODO exactly one hypen => split into debian version. >1 hypen => all but last hypen go into upstrream
-        version_re = re.compile("""((?P<epoch>\d+):)?(?P<upstream>[-0-9.+:]+)(-(?P<debian>[a-zA-Z0-9+.]+)?(ubuntu(?P<ubuntu>[a-zA-Z0-9+.]+))?)?""" )
+        # TODO debian group is including the 'ubuntu' string
+        version_re = re.compile("""
+            ((?P<epoch>\d+):)?
+            (
+                    ( (?P<upstream1>[-0-9.+:]+) - (?P<debian1>[a-zA-Z0-9+.]+) ( ubuntu (?P<ubuntu1>[a-zA-Z0-9+.]+) )? )
+                |   ( (?P<upstream2>[0-9.+:]+) ( - (?P<debian2>[a-zA-Z0-9+.]+) ( ubuntu (?P<ubuntu2>[a-zA-Z0-9+.]+) )? )? )
+            )
+            """, re.VERBOSE )
 
         match = version_re.match( self.version_string )
-        assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version)
+        assert match is not None, "The version string for %s (%s) does not match the version regular expression %s" % (self.name, self.version, version_re)
 
         dep_match = version_re.match( dep.version )
-        assert dep_match is not None, "The version string for depenency %s does not match the version regular expression" % dep
+        assert dep_match is not None, "The version string for depenency %s (%s) does not match the version regular expression %r" % (dep, dep.version, version_re )
 
         relation_to_func = {
             '<<': operator.lt,
@@ -151,17 +157,30 @@ class Package():
         # initial digit strings) are repeated until a difference is found or
         # both strings are exhausted. 
 
+        pkg_version_dict = match.groupdict()
+        if pkg_version_dict['upstream1'] is not None:
+            pkg_version_dict['upstream'] = pkg_version_dict['upstream1']
+        else:
+            pkg_version_dict['upstream'] = pkg_version_dict['upstream2']
+        dep_version_dict = match.groupdict()
+        if dep_version_dict['upstream1'] is not None:
+            dep_version_dict['upstream'] = dep_version_dict['upstream1']
+        else:
+            dep_version_dict['upstream'] = dep_version_dict['upstream2']
+
+        print repr(pkg_version_dict)
+        print repr(dep_version_dict)
+
         # Check the upstream version
-        pkg_str = match.group('upstream')
-        dep_str = dep_match.group('upstream')
+        pkg_str = pkg_version_dict['upstream']
+        dep_str = dep_version_dict['upstream']
         assert pkg_str is not None and dep_str is not None
 
-        splitter_re = re.compile( "^(\D*)(\d*)(\D*)(\d*)" )
-        digit_non_digit = splitter_re.match( pkg_str )
-        print repr(digit_non_digit.groups())
-        print repr(match.groupdict())
+        digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_str) if s != ""]
+        digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_str) if s != ""]
+        print repr(digits_non_digits_pkg)
+        print repr(digits_non_digits_dep)
 
-        assert digit_non_digit is not None
 
         # check the debian version
 
@@ -296,7 +315,7 @@ def dl_depenencies(package, local_repos, remote_repos):
 
             remote_options = [r for r in remote_repos if r[package] is not None]
             
-            assert len(remote_options) != 0, "package %s is not available in local or remote repositories"
+            assert len(remote_options) != 0, "package %s is not available in local or remote repositories" % package
             assert len(remote_options) == 1, "more than one option to download from, there should be only one"
             
             package = remote_options[0][package]
