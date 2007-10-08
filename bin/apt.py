@@ -1,37 +1,37 @@
 import os, re, commands, copy, urllib, gzip, tempfile, operator
 
 class Dependency():
-    def __init__(self, string=None, package_name=None, version_string=None, relation=None):
+    def __init__(self, string=None, package_name=None, version=None, relation=None):
         if string is not None:
             depends_re = re.compile( r"(?P<name>\S*) \((?P<relation><<|<=|=|>=|>>) (?P<version>\S*)\)" )
             result = depends_re.search( string )
             if result is None:
                 self.name = string
-                self.version_string = None
+                self.version = None
                 self.relation = None
             else:
                 self.name = result.group('name')
-                self.version_string = result.group('version')
+                self.version = result.group('version')
                 self.relation = result.group('relation')
         else:
             self.name = name
-            self.version_string = version_string
+            self.version = version
             self.relation = relation
 
     def __str__(self):
-        if self.relation is None and self.version_string is None:
+        if self.relation is None and self.version is None:
             return self.name
         else:
-            return "%s (%s %s)" % (self.name, self.relation, self.version_string)
+            return "%s (%s %s)" % (self.name, self.relation, self.version)
 
     def __repr__(self):
-        return "Dependency( name=%r, version_string=%r, relation=%r )" % (self.name, self.version_string, self.relation )
+        return "Dependency( name=%r, version=%r, relation=%r )" % (self.name, self.version, self.relation )
 
     def __eq__(self, other):
-        return self.name == other.name and self.version_string == other.version_string and self.relation == other.version_string
+        return self.name == other.name and self.version == other.version and self.relation == other.version
 
     def __hash__(self):
-        return hash((self.name, self.version_string, self.relation))
+        return hash((self.name, self.version, self.relation))
 
 class Package():
     def __init__(self, filename=None):
@@ -102,9 +102,9 @@ class Package():
         version_re = re.compile("""((?P<epoch>\d+):)?(?P<upstream>[-0-9.+:]+)(-(?P<debian>[a-zA-Z0-9+.]+)?(ubuntu(?P<ubuntu>[a-zA-Z0-9+.]+))?)?""" )
 
         match = version_re.match( self.version_string )
-        assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version_string)
+        assert match is not None, "The version string for %s (%s) does not match the version regular expression" % (self.name, self.version)
 
-        dep_match = version_re.match( dep.version_string )
+        dep_match = version_re.match( dep.version )
         assert dep_match is not None, "The version string for depenency %s does not match the version regular expression" % dep
 
         relation_to_func = {
@@ -118,8 +118,11 @@ class Package():
         assert dep.relation in relation_to_func.keys(), "The depenency %s has a relation of %s, which is not in the known relations" % (dep, dep.relation)
         op = relation_to_func[dep.relation]
 
-        if int(match.group('epoch')) != int(dep_match.group('epoch')):
-            return op(int(match.group('epoch')), int(dep_match.group('epoch')))
+        assert (match.group('epoch') is None and dep_match.group('epoch') is None) or (match.group('epoch') is not None or dep_match.group('epoch') ), "Exactly one of the version strings %s and %s contain an epoch. Either none or both should include one" % (self.version_string, dep.version )
+        if match.group('epoch') is not None:
+            # if we provide an epoch we should check it. If not skip it.
+            if int(match.group('epoch')) != int(dep_match.group('epoch')):
+                return op(int(match.group('epoch')), int(dep_match.group('epoch')))
 
 
 
@@ -148,6 +151,16 @@ class Package():
         # both strings are exhausted. 
 
         # Check the upstream version
+        pkg_str = match.group('upstream')
+        dep_str = dep_match.group('upstream')
+        assert pkg_str is not None and dep_str is not None
+
+        splitter_re = re.compile( "^(\D*)(\d*)(\D*)(\d*)" )
+        digit_non_digit = splitter_re.match( pkg_str )
+        print repr(digit_non_digit.groups())
+        print repr(match.groupdict())
+
+        assert digit_non_digit is not None
 
         # check the debian version
 
