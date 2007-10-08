@@ -164,6 +164,9 @@ class Package():
         else:
             pkg_version_dict['upstream'] = pkg_version_dict['upstream2']
             pkg_version_dict['debian'] = pkg_version_dict['debian2']
+        del pkg_version_dict['upstream1'], pkg_version_dict['upstream2']
+        del pkg_version_dict['debian1'], pkg_version_dict['debian2']
+
         dep_version_dict = match.groupdict()
         if dep_version_dict['upstream1'] is not None:
             dep_version_dict['upstream'] = dep_version_dict['upstream1']
@@ -171,17 +174,9 @@ class Package():
         else:
             dep_version_dict['upstream'] = dep_version_dict['upstream2']
             dep_version_dict['debian'] = dep_version_dict['debian2']
+        del dep_version_dict['upstream1'], dep_version_dict['upstream2']
+        del dep_version_dict['debian1'], dep_version_dict['debian2']
 
-        # Clean up the debian/ubuntu version numbering
-        assert re.match( "\d*(ubuntu\d*)?", pkg_version_dict['debian'] ), "Debian version (%s) for the package %s does not match the ubuntu version format" % (pkg_version_dict['debian'], self)
-        assert re.match( "\d*(ubuntu\d*)?", dep_version_dict['debian'] ), "Debian version (%s) for the depenency %s does not match the ubuntu    version format" % (dep_version_dict['debian'], dep)
-
-        if re.match( "\d*ubuntu\d*", pkg_version_dict['debian'] ):
-            pkg_version_dict['debian'], pkg_version_dict['ubuntu'] = re.split("ubuntu", pkg_version_dict['debian'])
-            print repr(pkg_version_dict)
-        if re.match("\d*ubuntu\d*", dep_version_dict['debian'] ):
-            dep_version_dict['debian'], dep_version_dict['ubuntu'] = re.split("ubuntu", dep_version_dict['debian'])
-            print repr(dep_version_dict)
 
         # Check the upstream version
         pkg_str = pkg_version_dict['upstream']
@@ -205,22 +200,36 @@ class Package():
             if el != longer[index]:
                 return op(el, longer[index])
 
+        if pkg_version_dict['debian'] is None:
+            return True
+
+        # Clean up the debian/ubuntu version numbering
+        assert re.match( "\d*(ubuntu\d*)?", pkg_version_dict['debian'] ), "Debian version (%s) for the package %s does not match the ubuntu version format" % (pkg_version_dict['debian'], self)
+        assert re.match( "\d*(ubuntu\d*)?", dep_version_dict['debian'] ), "Debian version (%s) for the depenency %s does not match the ubuntu    version format" % (dep_version_dict['debian'], dep)
+
+        if re.match( "\d*ubuntu\d*", pkg_version_dict['debian'] ):
+            pkg_version_dict['debian'], pkg_version_dict['ubuntu'] = re.split("ubuntu", pkg_version_dict['debian'])
+            #print repr(pkg_version_dict)
+        if re.match("\d*ubuntu\d*", dep_version_dict['debian'] ):
+            dep_version_dict['debian'], dep_version_dict['ubuntu'] = re.split("ubuntu", dep_version_dict['debian'])
+            #print repr(dep_version_dict)
+
         # check the debian version
         if dep_version_dict['debian'] is None:
             # we don't care about the debian version for this depenency
             #print "debian version is irrelevant for %s" % dep
             return True # cause if we've got to here, it's OK            
         else:
-            if pkg_version_dict['debian'] != dep_version_dict['debian']:
+            if pkg_version_dict['debian'] != dep_version_dict['debian'] or 'ubuntu' not in pkg_version_dict.keys():
                 return op(int(pkg_version_dict['debian']), int(dep_version_dict['debian']))
+
 
         # check the ubuntu version
         if dep_version_dict['ubuntu'] is None:
             #print "We don't care about ubuntu version for %s" % dep
             return True
         else:
-            if pkg_version_dict['ubuntu'] != dep_version_dict['ubuntu']:
-                return op(int(pkg_version_dict['ubuntu']), int(dep_version_dict['ubuntu']))
+            return op(int(pkg_version_dict['ubuntu']), int(dep_version_dict['ubuntu']))
 
         raise NotImplementedError, "The code for comparing versions has finished without returning. This means the author did not fully understand the debian method of comparing versions or this is a funny deb. The deb: %r. The depenency: %r" % (self, dep)
 
@@ -340,95 +349,100 @@ class Repository():
 
 
 
-def dl_depenencies(package, local_repos, remote_repos):
-    if isinstance(package, str):
-        # deb is a package name
-        options = [r for r in local_repos if r[package] is not None]
-        assert len(options) <= 1, "More than one local repository has the packages %s, don't know what to do" % packages
-        if len(options) == 0:
-            # not found locally, try looking remotely
-
-            remote_options = [r for r in remote_repos if r[package] is not None]
-            
-            assert len(remote_options) != 0, "package %s is not available in local or remote repositories" % package
-            assert len(remote_options) == 1, "more than one option to download from, there should be only one"
-            
-            package = remote_options[0][package]
-        else:
-            package = options[0][package]
-
-    assert isinstance(package, Package)
-
-    # Start off with all our depends. We have to keep going until we this
-    # is empty.
-    unfulfiled = set(package.depends)
-    fulfiled_deps = set()
-
+def dl_depenencies(packages, local_repos, remote_repos):
     debs_to_download = set()
 
-    while len(unfulfiled) > 0:
-        dependency = unfulfiled.pop()
-        print "Looking at dependency %s" % dependency
+    for package in packages:
 
-        fulfiled_locally = False
+        if isinstance(package, str):
+            # deb is a package name
+            options = [r for r in local_repos if r[package] is not None]
+            assert len(options) <= 1, "More than one local repository has the packages %s, don't know what to do" % packages
+            if len(options) == 0:
+                # not found locally, try looking remotely
 
-        for repo in local_repos:
-            if fulfiled_locally:
-                break
-            for package in repo.packages:
+                remote_options = [r for r in remote_repos if r[package] is not None]
+                
+                assert len(remote_options) != 0, "package %s is not available in local or remote repositories" % package
+                assert len(remote_options) == 1, "more than one option to download from, there should be only one"
+                
+                package = remote_options[0][package]
+                debs_to_download.add(package)
+            else:
+                package = options[0][package]
+
+
+        assert isinstance(package, Package)
+
+        # Start off with all our depends. We have to keep going until we this
+        # is empty.
+        unfulfiled = set(package.depends)
+        fulfiled_deps = set()
+
+
+        while len(unfulfiled) > 0:
+            dependency = unfulfiled.pop()
+            #print "Looking at dependency %s" % dependency
+
+            fulfiled_locally = False
+
+            for repo in local_repos:
                 if fulfiled_locally:
                     break
-                if isinstance( dependency, OrDependencyList ):
-                    if any([package.fulfils(dep) for dep in dependency] ):
-                        print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
-                        fulfiled_locally = True
+                for package in repo.packages:
+                    if fulfiled_locally:
                         break
-                else:
-                    if package.fulfils(dependency):
-                        print "package %s fulfils the dependency %s" % (package, dependency)
-                        fulfiled_locally = True
-                        break
+                    if isinstance( dependency, OrDependencyList ):
+                        if any([package.fulfils(dep) for dep in dependency] ):
+                            #print "package %s fulfils the dependency %s, which is part of %s" % (package, dep, dependency)
+                            fulfiled_locally = True
+                            break
+                    else:
+                        if package.fulfils(dependency):
+                            #print "package %s fulfils the dependency %s" % (package, dependency)
+                            fulfiled_locally = True
+                            break
 
-        if fulfiled_locally:
-            # Don't bother looking at the remote repositories if we can already fulfill locally
-            print "The dependency %s can be fulfilled locally" % dependency
-            continue # to the next package
+            if fulfiled_locally:
+                # Don't bother looking at the remote repositories if we can already fulfill locally
+                print "The dependency %s can be fulfilled locally" % dependency
+                continue # to the next package
 
-        # check if one of the debs we're going to download will fulfil this repository. Can help with cycles
-        if any([deb.fulfils(dependency) for deb in debs_to_download]):
-            print "The dependency %s will be fulfilled by one of the debs we are going to download" % dependency
-            continue # to next dependency
+            # check if one of the debs we're going to download will fulfil this repository. Can help with cycles
+            if any([deb.fulfils(dependency) for deb in debs_to_download]):
+                print "The dependency %s will be fulfilled by one of the debs we are going to download" % dependency
+                continue # to next dependency
 
-        # we know we need to look on the web for this dependency
+            # we know we need to look on the web for this dependency
 
-        fulfiled_remotely = False
-        remote_repo = None
-        for repo in remote_repos:
-            if fulfiled_remotely:
-                break
-            for package in repo.packages:
+            fulfiled_remotely = False
+            remote_repo = None
+            for repo in remote_repos:
                 if fulfiled_remotely:
                     break
-                if isinstance( dependency, OrDependencyList ):
-                    if any([package.fulfils(dep) for dep in dependency] ):
-                        debs_to_download.add(package)
-                        fulfiled_remotely = True
-                        remote_repo = repo
+                for package in repo.packages:
+                    if fulfiled_remotely:
                         break
-                else:
-                    if package.fulfils(dependency):
-                        debs_to_download.add(package)
-                        fulfiled_remotely = True
-                        remote_repo = repo
-                        break
-        
-        if fulfiled_remotely:
-            print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
+                    if isinstance( dependency, OrDependencyList ):
+                        if any([package.fulfils(dep) for dep in dependency] ):
+                            debs_to_download.add(package)
+                            fulfiled_remotely = True
+                            remote_repo = repo
+                            break
+                    else:
+                        if package.fulfils(dependency):
+                            debs_to_download.add(package)
+                            fulfiled_remotely = True
+                            remote_repo = repo
+                            break
+            
+            if fulfiled_remotely:
+                print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
 
-        if not fulfiled_remotely and not fulfiled_locally:
-            print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
+            if not fulfiled_remotely and not fulfiled_locally:
+                print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
 
-        print "The following packages need to be downloaded: "+str(debs_to_download)
+            print "The following packages need to be downloaded: "+str(debs_to_download)
 
     # now download our debs
     for deb in debs_to_download:
