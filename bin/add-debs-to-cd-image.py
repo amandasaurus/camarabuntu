@@ -343,22 +343,13 @@ for deb in debs:
         if key == " Package":
             package_names.append(value)
 
+# now append the d-i directive to the preseed file to install our custom packages
 preseed_dir = os.path.join(options.cddir, 'preseed')
 camarabuntu_preseeds = [x for x in os.listdir(preseed_dir) if x.startswith('camarabuntu')]
+append_line = 'd-i pkgsel/include string %s' % ' '.join(package_name for package_name in package_names)
 for preseed_file in camarabuntu_preseeds:
     preseed_file = os.path.join(preseed_dir, preseed_file)
     print 'editing ', preseed_file 
-    lines = open(preseed_file).readlines()
-    newlines = []
-    for line in lines:
-        line = line.strip()
-        print line
-        if line == r'd-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$':
-            print 'changing', line
-            line = "d-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$|" + "|".join(["~n^%s$" % package_name for package_name in package_names])
-            print 'to', line
-            newlines.append(line)
-            newlines.append("\td-i pkgsel/include string " + " ".join(package_names))
-        else:
-            newlines.append(line)
-    open(preseed_file, 'w').write('\n'.join(newlines)) 
+    fd = open(preseed_file, 'a')
+    fd.write('\n\n%s\n' % append_line)
+    fd.close()

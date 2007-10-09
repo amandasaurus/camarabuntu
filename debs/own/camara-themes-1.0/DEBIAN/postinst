@@ -12,3 +12,15 @@ gconftool-2 --direct \
     --type string \
     --set /desktop/gnome/background/picture_filename \
     /usr/share/backgrounds/camara-background-1.jpg
+
+# set the default theme
+gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
+    --type string \
+    --set /desktop/gnome/interface/gtk_theme LiNsta3
+
+# set the icon theme
+gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
+    --type string \
+    --set /desktop/gnome/interface/icon_theme OSX
