@@ -66,3 +66,6 @@ xserver-xorg xserver-xorg/autodetect_monitor boolean true
 xserver-xorg xserver-xorg/config/display/modes multiselect 1280×1024, 800×600, 640×480
 xserver-xorg xserver-xorg/config/monitor/selection-method select medium
 xserver-xorg xserver-xorg/config/monitor/mode-list select 1024×768 @ 60 Hz
+
+# disable apt mirror scanning because it just hangs if there is no network
+d-i apt-setup/use_mirror boolean false
