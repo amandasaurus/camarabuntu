@@ -70,6 +70,9 @@ class Package():
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return str(self)
+
     def parse_dependencies(self, depends_line):
         depends = []
 
@@ -131,6 +134,25 @@ class Package():
             if int(match.group('epoch')) != int(dep_match.group('epoch')):
                 return op(int(match.group('epoch')), int(dep_match.group('epoch')))
 
+        pkg_version_dict = match.groupdict()
+        if pkg_version_dict['upstream1'] is not None:
+            pkg_version_dict['upstream'] = pkg_version_dict['upstream1']
+            pkg_version_dict['debian'] = pkg_version_dict['debian1']
+        else:
+            pkg_version_dict['upstream'] = pkg_version_dict['upstream2']
+            pkg_version_dict['debian'] = pkg_version_dict['debian2']
+        del pkg_version_dict['upstream1'], pkg_version_dict['upstream2']
+        del pkg_version_dict['debian1'], pkg_version_dict['debian2']
+
+        dep_version_dict = match.groupdict()
+        if dep_version_dict['upstream1'] is not None:
+            dep_version_dict['upstream'] = dep_version_dict['upstream1']
+            dep_version_dict['debian'] = dep_version_dict['debian1']
+        else:
+            dep_version_dict['upstream'] = dep_version_dict['upstream2']
+            dep_version_dict['debian'] = dep_version_dict['debian2']
+        del dep_version_dict['upstream1'], dep_version_dict['upstream2']
+        del dep_version_dict['debian1'], dep_version_dict['debian2']
 
 
         # From: http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
@@ -157,25 +179,6 @@ class Package():
         # initial digit strings) are repeated until a difference is found or
         # both strings are exhausted. 
 
-        pkg_version_dict = match.groupdict()
-        if pkg_version_dict['upstream1'] is not None:
-            pkg_version_dict['upstream'] = pkg_version_dict['upstream1']
-            pkg_version_dict['debian'] = pkg_version_dict['debian1']
-        else:
-            pkg_version_dict['upstream'] = pkg_version_dict['upstream2']
-            pkg_version_dict['debian'] = pkg_version_dict['debian2']
-        del pkg_version_dict['upstream1'], pkg_version_dict['upstream2']
-        del pkg_version_dict['debian1'], pkg_version_dict['debian2']
-
-        dep_version_dict = match.groupdict()
-        if dep_version_dict['upstream1'] is not None:
-            dep_version_dict['upstream'] = dep_version_dict['upstream1']
-            dep_version_dict['debian'] = dep_version_dict['debian1']
-        else:
-            dep_version_dict['upstream'] = dep_version_dict['upstream2']
-            dep_version_dict['debian'] = dep_version_dict['debian2']
-        del dep_version_dict['upstream1'], dep_version_dict['upstream2']
-        del dep_version_dict['debian1'], dep_version_dict['debian2']
 
 
         # Check the upstream version
@@ -185,8 +188,6 @@ class Package():
 
         digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_str) if s != ""]
         digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_str) if s != ""]
-        #print repr(digits_non_digits_pkg)
-        #print repr(digits_non_digits_dep)
 
         if len(digits_non_digits_dep) <= len(digits_non_digits_dep):
             smaller = digits_non_digits_dep
@@ -195,18 +196,17 @@ class Package():
             smaller = digits_non_digits_pkg
             longer = digits_non_digits_dep
 
+        last_check = None
         for index, el in enumerate(smaller):
             # check if they are different
+            last_check = op( el, longer[index])
             if el != longer[index]:
-                return op(el, longer[index])
+                return last_check
 
         if pkg_version_dict['debian'] is None:
-            return True
+            return last_check
 
         # Clean up the debian/ubuntu version numbering
-        assert re.match( "\d*(ubuntu\d*)?", pkg_version_dict['debian'] ), "Debian version (%s) for the package %s does not match the ubuntu version format" % (pkg_version_dict['debian'], self)
-        assert re.match( "\d*(ubuntu\d*)?", dep_version_dict['debian'] ), "Debian version (%s) for the depenency %s does not match the ubuntu    version format" % (dep_version_dict['debian'], dep)
-
         if re.match( "\d*ubuntu\d*", pkg_version_dict['debian'] ):
             pkg_version_dict['debian'], pkg_version_dict['ubuntu'] = re.split("ubuntu", pkg_version_dict['debian'])
             #print repr(pkg_version_dict)
@@ -214,20 +214,31 @@ class Package():
             dep_version_dict['debian'], dep_version_dict['ubuntu'] = re.split("ubuntu", dep_version_dict['debian'])
             #print repr(dep_version_dict)
 
-        # check the debian version
-        if dep_version_dict['debian'] is None:
-            # we don't care about the debian version for this depenency
-            #print "debian version is irrelevant for %s" % dep
-            return True # cause if we've got to here, it's OK            
-        else:
-            if pkg_version_dict['debian'] != dep_version_dict['debian'] or 'ubuntu' not in pkg_version_dict.keys():
-                return op(int(pkg_version_dict['debian']), int(dep_version_dict['debian']))
+        if pkg_version_dict['debian'] != dep_version_dict['debian']:
+            # we need to do the same splitting based on digits and non digits for the debian version.
+            digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_version_dict['debian']) if s != ""]
+            digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_version_dict['debian']) if s != ""]
 
+            if len(digits_non_digits_dep) <= len(digits_non_digits_dep):
+                smaller = digits_non_digits_dep
+                longer = digits_non_digits_pkg
+            else:
+                smaller = digits_non_digits_pkg
+                longer = digits_non_digits_dep
+
+            last_check = None
+            for index, el in enumerate(smaller):
+                # check if they are different
+                last_check = op( el, longer[index])
+                if el != longer[index]:
+                    return last_check
+
+        # if we've gotten to here, then the debian versions are the same, so look at the ubuntu version
+        assert pkg_version_dict['debian'] == dep_version_dict['debian'], "When checking debian versions %s and %s, the code got to the 'check ubuntu' version part. This should only happen if the debian versions are the same" % (pkg_version_dict['debian'], dep_version_dict['debian'])
 
         # check the ubuntu version
-        if dep_version_dict['ubuntu'] is None:
-            #print "We don't care about ubuntu version for %s" % dep
-            return True
+        if 'ubuntu' not in dep_version_dict.keys() or dep_version_dict['ubuntu'] is None:
+            return last_check
         else:
             return op(int(pkg_version_dict['ubuntu']), int(dep_version_dict['ubuntu']))
 
