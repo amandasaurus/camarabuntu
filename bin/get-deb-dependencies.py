@@ -9,10 +9,10 @@ import apt
 
 parser = OptionParser()
 
-parser.add_option( "-r", "--repo", "--repository", "--local-repos", "--local-repositories",
+parser.add_option( "-l", "--local-repo", "--local-repository",
                    dest="local_repos", action="append", help="Repository path", default=[] )
 
-parser.add_option( "-w", "--web-repo", "--web-repository", "--remote-repo", "--remote-repository",
+parser.add_option( "-r", "--remote-repo", "--remote-repository", "--remote-repo", "--remote-repository",
                    dest="remote_repos", action="append", help="URL of web repository", default=[] )
 
 
