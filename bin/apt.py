@@ -362,6 +362,7 @@ class Repository():
 
 def dl_depenencies(packages, local_repos, remote_repos):
     debs_to_download = set()
+    unmet_dependencies = set()
 
     for package in packages:
 
@@ -416,12 +417,12 @@ def dl_depenencies(packages, local_repos, remote_repos):
 
             if fulfiled_locally:
                 # Don't bother looking at the remote repositories if we can already fulfill locally
-                print "The dependency %s can be fulfilled locally" % dependency
+                #print "The dependency %s can be fulfilled locally" % dependency
                 continue # to the next package
 
             # check if one of the debs we're going to download will fulfil this repository. Can help with cycles
             if any([deb.fulfils(dependency) for deb in debs_to_download]):
-                print "The dependency %s will be fulfilled by one of the debs we are going to download" % dependency
+                #print "The dependency %s will be fulfilled by one of the debs we are going to download" % dependency
                 continue # to next dependency
 
             # we know we need to look on the web for this dependency
@@ -447,14 +448,21 @@ def dl_depenencies(packages, local_repos, remote_repos):
                             remote_repo = repo
                             break
             
-            if fulfiled_remotely:
-                print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
+            #if fulfiled_remotely:
+                #print "The dependency %s can be fulfilled from the %s repository" % (dependency, remote_repo)
 
             if not fulfiled_remotely and not fulfiled_locally:
                 print "Warning the dependency %s cannot be fulfilled remotely or locally. Try adding extra repositories" % dependency
+                unmet_dependencies.add(dependency)
 
-            print "The following packages need to be downloaded: "+str(debs_to_download)
+
+    print "The following packages need to be downloaded: "+", ".join([str(x) for x in debs_to_download])
 
     # now download our debs
     for deb in debs_to_download:
         deb.save()
+
+    if len(unmet_dependencies) > 0:
+        print "Warning: the following dependencies could not be met:"
+        print ", ".join([str(x) for x in unmet_dependencies])
+        print "Please add extra repositories"
