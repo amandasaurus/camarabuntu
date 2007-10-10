@@ -1,0 +1,8 @@
+#!/bin/sh
+# postinst script for camara-respect
+#
+# see: dh_installdeb(1)
+
+set -e
+
+chown -R camara.camara /home/camara/Desktop/respect

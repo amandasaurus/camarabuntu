@@ -1,0 +1,20 @@
+Source: camara-flashplayer-nonfree
+Section: contrib/web
+Priority: optional
+Maintainer: camara <linux@camara.ie>
+Build-Depends: debhelper
+Standards-Version: 3.7.2.2
+
+Package: camara-flashplayer-nonfree
+Architecture: i386
+Essential: no
+Recommends: mozilla | netscape  
+Depends: debconf | debconf-2.0, wget, libgtk2.0-0, fontconfig, libxt6, libxext6, libatk1.0-0, libc6, libcairo2, libexpat1, libfontconfig1, libfreetype6, libglib2.0-0, libice6, libpango1.0-0, libpng12-0, libsm6, libx11-6, libxau6, libxcursor1, libxdmcp6, libxfixes3, libxi6, libxinerama1, libxrandr2, libxrender1, zlib1g
+Suggests: firefox, konqueror-nsplugins, x-ttcidfont-conf, msttcorefonts, ttf-bitstream-vera | ttf-dejavu, ttf-xfree86-nonfree, xfs (>= 1:1.0.1-5)
+Conflicts: flashplugin (<< 6), xfs (<< 1:1.0.1-5), flashplayer-mozilla
+Description: Adobe Flash Player plugin
+ WARNING: The distribution license of the Adobe flash
+ plugin is available at www.adobe.com.  Installing this Ubuntu package implies
+ that you have accepted the terms of that license.
+ .
+ Homepage: http://wiki.ubuntu.com/FlashPlayer9

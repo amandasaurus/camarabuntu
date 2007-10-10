@@ -1,0 +1,12 @@
+Source: camara-respect
+Section: doc
+Priority: optional
+Maintainer: camara <linux@camara.ie>
+Build-Depends: debhelper
+Standards-Version: 3.7.2.2
+
+Package: camara-respect
+Architecture: any
+Essential: no
+Recommends: mozilla | netscape  
+Description: HIV/AIDS tutorial

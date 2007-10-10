@@ -1,5 +1,6 @@
 #! /usr/bin/python
 
+import sys
 from optparse import OptionParser
 
 parser = OptionParser()
@@ -21,6 +22,7 @@ parser.add_option( "-n", "--name",
 
 if options.isofile is None or options.dir is None or options.name is None:
     parser.print_help()
+    sys.exit(1)
 
 import commands
 

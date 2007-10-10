@@ -1,0 +1,11 @@
+Source: camara-themes
+Section: x11
+Priority: optional
+Maintainer: Rory McCann <rory@technomancy.org>
+Build-Depends: debhelper
+Standards-Version: 3.7.2.2
+
+Package: camara-themes
+Architecture: all
+Essential: no
+Description: Camara backgrounds

@@ -1,8 +1,0 @@
-Package: camara-backgrounds
-Priority: optional
-Section: x11
-Maintainer: Rory McCann <rory@technomancy.org>
-Architecture: all
-Version: 0.1-1
-Description: Camara backgrounds
- Default backgrounds for Camara's Edubuntu, currently includes.

@@ -1,9 +1,11 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os, shutil, tempfile, commands, glob, sys, re
+import os, shutil, tempfile, commands, glob, sys, re, subprocess
 
-parser = OptionParser()
+usage = "%prog [options] <list of .debs>"
+
+parser = OptionParser(usage=usage)
 
 parser.add_option("-d", "--cd-dir",
                   dest="cddir", default=None,
@@ -21,15 +23,19 @@ parser.add_option( "--indices",
                    dest="indices", default=None, type="string",
                    help="The directory of the ubuntu indices" )
                     
+parser.add_option( "--passphrase",
+                   dest="passphrase", default=None, type="string",
+                   help="The passphrase for the gpg key" )
 
 (options, orig_debs) = parser.parse_args()
 
-debs = [os.path.abspath( deb ) for deb in orig_debs ]
+if not orig_debs or not options.cddir or not options.gpgkey or not options.indices:
+    parser.print_help()
+    sys.exit(1)
 
-assert options.cddir is not None
-assert options.gpgkey is not None
-assert options.indices is not None
 assert os.path.isdir( options.indices )
+
+debs = [os.path.abspath( deb ) for deb in orig_debs ]
 
 cddir = os.path.abspath( options.cddir )
 indices = os.path.abspath( options.indices )
@@ -101,23 +107,38 @@ assert os.path.isfile( gpg_keys_filename )
 
 print "Adding GPG key %s to the ubuntu-keyring" % options.gpgkey
 
-status, output = commands.getstatusoutput( "gpg --import < %s" % gpg_keys_filename )
+cmd = "gpg --import < %s" % gpg_keys_filename
+p = subprocess.Popen(cmd, shell=True)
+stdout, stderr = p.communicate(input=options.passphrase)
 # if this fails someone was messing with the code before
-assert status == 0
+if p.returncode != 0:
+  print stdout
+  print stderr
+  sys.exit(p.returncod)
 
-status, output = commands.getstatusoutput( "gpg --export FBB75451 437D05B5 %s > %s" % (options.gpgkey, gpg_keys_filename) )
+cmd = "gpg --export FBB75451 437D05B5 %s > %s" % (options.gpgkey, gpg_keys_filename)
+p = subprocess.Popen(cmd, shell=True)
+stdout, stderr = p.communicate(input=options.passphrase)
 # Invalid keys are not detected here, unfortunatly
-assert status == 0
+if p.returncode != 0:
+  print stdout
+  print stderr
+  sys.exit(p.returncod)
 
-print "Rebuilding the ubuntu-keyring."
+print "\n\nRebuilding the ubuntu-keyring."
 os.chdir( ubuntu_keyring_dir )
-status, output =  commands.getstatusoutput( "dpkg-buildpackage -rfakeroot -k%s" % options.gpgkey )
-if status != 0:
+cmd = "dpkg-buildpackage -rfakeroot -k%s" % options.gpgkey
+p = subprocess.Popen(cmd, shell=True)
+stdout, stderr = p.communicate(input=options.passphrase)
+# Invalid keys are not detected here, unfortunatly
+if p.returncode != 0:
     print "Unable to rebuild the ubuntu-keyring"
     print "Possible causes:"
     print " (*) The GPG key you gave (%s) is invalid, check available keys with \"gpg --list-keys\"" % options.gpgkey
     print "The output was:"
     print output
+    sys.exit(1)
+print "Finished Rebuilding the ubuntu-keyring.\n\n"
 
 # Copy these files into the main component
 shutil.copy( glob.glob( os.path.join( temp_dir, "ubuntu-keyring*_all.deb" ) )[0], os.path.join( old_cwd, cddir, 'pool/main/u/ubuntu-keyring/' ) )
@@ -292,8 +313,15 @@ if status != 0:
     print output
 assert status == 0
 
-status, output = commands.getstatusoutput( "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey})
-assert status == 0
+cmd = "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey}
+print cmd
+p = subprocess.Popen(cmd, shell=True)
+stdout, stderr = p.communicate(input=options.passphrase)
+# Invalid keys are not detected here, unfortunatly
+if p.returncode != 0:
+  print stdout
+  print stderr
+  sys.exit(p.returncod)
 
 # Clean up
 os.chdir( old_cwd )
@@ -315,17 +343,13 @@ for deb in debs:
         if key == " Package":
             package_names.append(value)
 
-print
-print
-print "Please add the following to the install pattern in the pressed file:"
-print "|".join(["~n^%s$" % package_name for package_name in package_names])
-
-print "For example change this line:"
-print "\td-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$"
-print "to this:"
-print "\td-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$|" + "|".join(["~n^%s$" % package_name for package_name in package_names])
-
-
-print
-print "And also add the following line:"
-print "\td-i pkgsel/include string " + " ".join(package_names)
+# now append the d-i directive to the preseed file to install our custom packages
+preseed_dir = os.path.join(options.cddir, 'preseed')
+camarabuntu_preseeds = [x for x in os.listdir(preseed_dir) if x.startswith('camarabuntu')]
+append_line = 'd-i pkgsel/include string %s' % ' '.join(package_name for package_name in package_names)
+for preseed_file in camarabuntu_preseeds:
+    preseed_file = os.path.join(preseed_dir, preseed_file)
+    print 'editing ', preseed_file 
+    fd = open(preseed_file, 'a')
+    fd.write('\n\n%s\n' % append_line)
+    fd.close()
