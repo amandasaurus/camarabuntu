@@ -144,7 +144,7 @@ class Package():
         del pkg_version_dict['upstream1'], pkg_version_dict['upstream2']
         del pkg_version_dict['debian1'], pkg_version_dict['debian2']
 
-        dep_version_dict = match.groupdict()
+        dep_version_dict = dep_match.groupdict()
         if dep_version_dict['upstream1'] is not None:
             dep_version_dict['upstream'] = dep_version_dict['upstream1']
             dep_version_dict['debian'] = dep_version_dict['debian1']
@@ -197,10 +197,10 @@ class Package():
             longer = digits_non_digits_dep
 
         last_check = None
-        for index, el in enumerate(smaller):
+        for index in range(len(smaller)):
             # check if they are different
-            last_check = op( el, longer[index])
-            if el != longer[index]:
+            last_check = op( digits_non_digits_pkg[index], digits_non_digits_dep[index] )
+            if digits_non_digits_pkg[index] != digits_non_digits_dep[index]:
                 return last_check
 
         if pkg_version_dict['debian'] is None:
