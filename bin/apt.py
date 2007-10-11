@@ -189,15 +189,10 @@ class Package():
         digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_str) if s != ""]
         digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_str) if s != ""]
 
-        if len(digits_non_digits_dep) <= len(digits_non_digits_dep):
-            smaller = digits_non_digits_dep
-            longer = digits_non_digits_pkg
-        else:
-            smaller = digits_non_digits_pkg
-            longer = digits_non_digits_dep
+        smaller_len = min(len(digits_non_digits_dep), len(digits_non_digits_pkg))
 
         last_check = None
-        for index in range(len(smaller)):
+        for index in range(smaller_len):
             # check if they are different
             last_check = op( digits_non_digits_pkg[index], digits_non_digits_dep[index] )
             if digits_non_digits_pkg[index] != digits_non_digits_dep[index]:
