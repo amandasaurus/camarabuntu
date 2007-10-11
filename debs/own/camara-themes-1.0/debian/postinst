@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -e
+
 # Default max workspaces = 1
 gconftool-2 --direct \
     --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
@@ -24,3 +26,6 @@ gconftool-2 --direct \
     --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults \
     --type string \
     --set /desktop/gnome/interface/icon_theme OSX
+
+
+chown -R camara.camara /home/camara/.themes/LiNsta3 

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e 
+
+chown -R camara.camara /home/camara/Desktop/wikipedia 

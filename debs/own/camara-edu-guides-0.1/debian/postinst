@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chown -R camara.camara /home/camara/Desktop/Camara_EDU_Guides 
