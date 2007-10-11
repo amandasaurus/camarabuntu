@@ -58,7 +58,7 @@ d-i grub-installer/with_other_os boolean true
 # Install the Edubuntu desktop and server.
 d-i	pkgsel/install-pattern	string ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server$
 
-# don’t show us the ‘Installing successful’ dialog
+# don't show us the Installing successful dialog
 d-i finish-install/reboot_in_progress note
 
 # XServer set up.
