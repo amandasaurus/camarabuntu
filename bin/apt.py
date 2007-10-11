@@ -193,12 +193,14 @@ class Package():
 
         last_check = None
         for index in range(smaller_len):
-            # check if they are different
-            last_check = op( digits_non_digits_pkg[index], digits_non_digits_dep[index] )
+            try:
+                last_check = op( int(digits_non_digits_pkg[index]), int(digits_non_digits_dep[index]) )
+            except ValueError:
+                last_check = op( digits_non_digits_pkg[index], digits_non_digits_dep[index] )
             if digits_non_digits_pkg[index] != digits_non_digits_dep[index]:
                 return last_check
 
-        if pkg_version_dict['debian'] is None:
+        if pkg_version_dict['debian'] is None or dep_version_dict['debian'] is None:
             return last_check
 
         # Clean up the debian/ubuntu version numbering
@@ -214,18 +216,16 @@ class Package():
             digits_non_digits_pkg = [s for s in re.split("(\D*)(\d*)", pkg_version_dict['debian']) if s != ""]
             digits_non_digits_dep = [s for s in re.split("(\D*)(\d*)", dep_version_dict['debian']) if s != ""]
 
-            if len(digits_non_digits_dep) <= len(digits_non_digits_dep):
-                smaller = digits_non_digits_dep
-                longer = digits_non_digits_pkg
-            else:
-                smaller = digits_non_digits_pkg
-                longer = digits_non_digits_dep
+            smaller_len = min(len(digits_non_digits_dep), len(digits_non_digits_pkg))
 
             last_check = None
-            for index, el in enumerate(smaller):
+            for index in range(smaller_len):
                 # check if they are different
-                last_check = op( el, longer[index])
-                if el != longer[index]:
+                try:
+                    last_check = op( int(digits_non_digits_pkg[index]), int(digits_non_digits_dep[index]) )
+                except ValueError:
+                    last_check = op( digits_non_digits_pkg[index], digits_non_digits_dep[index] )
+                if digits_non_digits_pkg[index] != digits_non_digits_dep[index]:
                     return last_check
 
         # if we've gotten to here, then the debian versions are the same, so look at the ubuntu version
