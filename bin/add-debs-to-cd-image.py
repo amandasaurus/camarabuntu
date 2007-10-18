@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 from optparse import OptionParser
-import os, shutil, tempfile, commands, glob, sys, re, subprocess
+import os, shutil, tempfile, commands, glob, sys, re, subprocess, shutil, time
 
 usage = "%prog [options] <list of .debs>"
 
@@ -346,10 +346,28 @@ for deb in debs:
 # now append the d-i directive to the preseed file to install our custom packages
 preseed_dir = os.path.join(options.cddir, 'preseed')
 camarabuntu_preseeds = [x for x in os.listdir(preseed_dir) if x.startswith('camarabuntu')]
-append_line = 'd-i pkgsel/include string %s' % ' '.join(package_name for package_name in package_names)
+print repr(camarabuntu_preseeds)
 for preseed_file in camarabuntu_preseeds:
     preseed_file = os.path.join(preseed_dir, preseed_file)
     print 'editing ', preseed_file 
-    fd = open(preseed_file, 'a')
-    fd.write('\n\n%s\n' % append_line)
+    new_filename = preseed_file+".backup."+str(int(time.time()))
+    shutil.move(preseed_file, new_filename)
+    fd = open(new_filename, 'r')
+    lines = []
+    for line in fd:
+        if line.startswith("d-i\tpkgsel/install-pattern\tstring ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server"):
+            lines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
+            # we need to remove the trailing \n
+            lines.append( line[:-1]+"|"+"|".join( ["~n^%s$" % package_name for package_name in package_names] ) + "\n" )
+            print "Got to the line"
+        else:
+            lines.append(line)
+
+    lines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
+    lines.append( "d-i\tpkgsel/include\tstring " + " ".join(package_names) + "\n" )
     fd.close()
+    
+    fd = open(preseed_file, "w")
+    fd.write( "".join( lines ) )
+    fd.close()
+    
