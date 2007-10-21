@@ -136,7 +136,8 @@ if p.returncode != 0:
     print "Possible causes:"
     print " (*) The GPG key you gave (%s) is invalid, check available keys with \"gpg --list-keys\"" % options.gpgkey
     print "The output was:"
-    print output
+    print stdout
+    print stderr
     sys.exit(1)
 print "Finished Rebuilding the ubuntu-keyring.\n\n"
 
