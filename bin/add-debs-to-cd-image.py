@@ -76,7 +76,7 @@ print "Wrote the Releases file"
 
 
 old_cwd = os.getcwd()
-temp_dir = tempfile.mkdtemp( prefix="camarabuntu-tmp-", dir=old_cwd)
+temp_dir = tempfile.mkdtemp( prefix="/tmp/camarabuntu-tmp-", dir=old_cwd)
 os.chdir( temp_dir )
 
 #shutil.copytree( os.path.join( old_cwd, cddir, 'pool', 'main', 'u', 'ubuntu-keyring' ), temp_dir )
@@ -151,7 +151,7 @@ shutil.rmtree( temp_dir )
 
 
 ## Now create the indices.
-temp_dir = tempfile.mkdtemp( prefix="camarabuntu-tmp-", dir=old_cwd )
+temp_dir = tempfile.mkdtemp( prefix="/tmp/camarabuntu-tmp-", dir=old_cwd )
 os.chdir( temp_dir )
 
 ftparchive_deb = open( os.path.join( temp_dir, 'apt-ftparchive-deb.conf' ), 'w' )
