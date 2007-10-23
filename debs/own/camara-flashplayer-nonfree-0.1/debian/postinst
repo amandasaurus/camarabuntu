@@ -5,4 +5,4 @@
 
 set -e
 
-chown -R camara.camara /home/camara/Desktop/respect
+chown -R camara /home/camara/Desktop/respect
