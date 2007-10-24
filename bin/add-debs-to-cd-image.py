@@ -351,11 +351,8 @@ print repr(camarabuntu_preseeds)
 for preseed_file in camarabuntu_preseeds:
     preseed_file = os.path.join(preseed_dir, preseed_file)
     print 'editing ', preseed_file 
-    new_filename = preseed_file+".backup."+str(int(time.time()))
-    shutil.move(preseed_file, new_filename)
-    fd = open(new_filename, 'r')
-    lines = []
-    for line in fd:
+    lines = open(preseed_file, 'r').readlines()
+    for line in lines:
         if line.startswith("d-i\tpkgsel/install-pattern\tstring ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server"):
             lines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
             # we need to remove the trailing \n
