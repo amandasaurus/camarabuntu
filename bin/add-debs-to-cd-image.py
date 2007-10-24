@@ -352,20 +352,20 @@ for preseed_file in camarabuntu_preseeds:
     preseed_file = os.path.join(preseed_dir, preseed_file)
     print 'editing ', preseed_file 
     lines = open(preseed_file, 'r').readlines()
+    newlines = []
     for line in lines:
         if line.startswith("d-i\tpkgsel/install-pattern\tstring ~t^edubuntu-standard$|~t^edubuntu-desktop$|~t^edubuntu-server"):
-            lines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
+            print "Got to the line", line
+            newlines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
             # we need to remove the trailing \n
-            lines.append( line[:-1]+"|"+"|".join( ["~n^%s$" % package_name for package_name in package_names] ) + "\n" )
-            print "Got to the line"
+            newlines.append( line[:-1]+"|"+"|".join( ["~n^%s$" % package_name for package_name in package_names] ) + "\n" )
         else:
-            lines.append(line)
+            newlines.append(line)
 
-    lines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
-    lines.append( "d-i\tpkgsel/include\tstring " + " ".join(package_names) + "\n" )
-    fd.close()
+    newlines.append( "# The following line has been automatically added by the camarabuntu scripts\n" )
+    newlines.append( "d-i\tpkgsel/include\tstring " + " ".join(package_names) + "\n" )
     
     fd = open(preseed_file, "w")
-    fd.write( "".join( lines ) )
+    fd.write( "".join( newlines ) )
     fd.close()
     
