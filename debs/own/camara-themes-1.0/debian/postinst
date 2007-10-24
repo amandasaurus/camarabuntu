@@ -28,4 +28,5 @@ gconftool-2 --direct \
     --set /desktop/gnome/interface/icon_theme OSX
 
 
-chown -R camara /home/camara/.themes/LiNsta3 
+groupadd -f camara
+chown -R camara.camara /home/camara/.themes/LiNsta3 

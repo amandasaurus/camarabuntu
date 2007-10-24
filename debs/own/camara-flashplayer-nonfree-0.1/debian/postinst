@@ -5,4 +5,5 @@
 
 set -e
 
-chown -R camara /home/camara/Desktop/respect
+groupadd -f camara
+chown -R camara.camara /home/camara/Desktop/respect
