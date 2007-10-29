@@ -280,7 +280,7 @@ class Repository():
     def __init__(self, uri, download_callback_func=None):
         self.packages = []
         self.type = None
-        if os.path.isdir( uri ):
+        if os.path.isdir( os.path.abspath( uri ) ):
             self.type = Repository.LOCAL_REPOSITORY
             self.path = os.path.abspath( uri )
             self.__scan_local_packages()
