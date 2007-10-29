@@ -8,5 +8,6 @@ Standards-Version: 3.7.2.2
 Package: camara-edu-guides
 Architecture: any
 Essential: no
+Depends: adduser, coreutils
 Recommends: evince
 Description: EDU Guides
