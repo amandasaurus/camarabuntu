@@ -347,12 +347,19 @@ class Repository():
             print repr( possibilities )
 
     def __getitem__(self, package_name):
-        assert self.packages is not None and len(self.packages) > 0, "Attempted to get a package from a repository that has no packages"
+        assert self.packages is not None and len(self.packages) > 0, "The repository %s has no packages, and attempted to get a package from it" % self
         for pkg in self.packages:
             if pkg.name == package_name:
                 return pkg
         return None
 
+    def __str__(self):
+        print "self.type = " + self.type
+        if self.type == Repository.LOCAL_REPOSITORY:
+            return "\"file://" + os.abspath( self.path ) + "\""
+        elif self.type == Repository.REMOTE_REPOSITORY:
+            return "%s %s %s" % (self.url, self.dist, self.component)
+        
 
 
 def dl_depenencies(packages, local_repos, remote_repos):
