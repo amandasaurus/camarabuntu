@@ -1,0 +1,512 @@
+/*  screen.css - MoinMoin Default Styles
+
+Copyright (c) 2001, 2002, 2003 by Juergen Hermann
+Modified by Nir Soffer (technical theme), Mauricio Hernandez (ruleta theme)
+Heather Stern (ubuntu theme)
+*/
+
+/* content styles */
+
+/* debug 
+* {border: 1px dotted blue;}
+*/
+
+body {
+    padding:0;
+    border:0;
+}
+
+/* the words when mouse is over */
+a:hover {color: #800000; } /* maroon */
+h1 a:hover {color: #800000; } /* maroon */
+
+/* override coloration of form elements */
+
+/* override coloration of dialog buttons */
+input {
+    font-size: 1em;
+    font-family: Arial, Lucida Grande, sans-serif;
+        border: grooved 1px #C1B496; /* ubuntu dark tan */
+        background-color: #F1F1ED; /* ubuntu near-white */
+        color: #2e2003; /* darker brown */
+}
+
+textarea, input[type=text], input[type=password] {
+    /* inherit from input */
+    font-size: 1em;
+    font-family: Lucida Typewriter, courier, monospace;
+    	border: solid 1px #C1B496; /* ubuntu dark tan */
+	background: #F1F1ED; /* ubuntu near-white */
+	color: #2e2003; /* darker brown */
+}
+
+select, option {
+    /* inherit from input */
+    /* don't override font */
+    	border: none;
+	background: #F1F1ED; /* ubuntu near-white */
+	color: #6d4c07; /* ubuntu dark brown */
+}
+
+.disabled {
+    /* IE ignore disabled attribute, but at least show items in gray */
+    /* disabled menu options */
+    color: #C1B496; /* ubuntu dark tan */
+}
+
+/* user interface styles */
+
+#header {
+    margin: 0;
+    padding: 0;
+}
+
+#mastwrap {
+    background: url(../img/u-header.png) bottom left repeat-x #DBBA75;
+	/* ubuntu orange */
+}
+
+#masthead
+{
+position:relative;
+background: url('../img/headerlogo.png') bottom left no-repeat transparent;
+border-style: solid;
+border-width: 0;
+color: #000;
+height: 90px;
+/* height: 6em; */
+/* em is cleaner when zoomed up, however zoomed down likes the px way... */ 
+}
+
+
+#logo {
+        //display: none;                /* we'll show an image instead */
+        text-indent:-10000px;
+        margin:0;
+        /* contains image and/or text link */
+        float: left;
+        margin: 0 10px 0 0;
+        font-size: 2em;
+        line-height: 1.2em;
+        font-weight: bold;
+        padding: 0;
+}
+
+#logo img {
+    vertical-align: middle;
+}
+
+/* NOTE: Wiki name color */
+#logo a {
+    color: black;
+    text-decoration: none;
+}
+
+*[dir="rtl"] #logo {
+    float: right;
+}
+
+#username {
+/* ok this part's normal */
+	clear: both;
+	margin: 0 20px;
+	text-align: right;
+	padding: 5px 8px;
+	white-space: nowrap;
+	background: white;
+	font-size: 0.85em;
+}
+
+#username li {
+    display: inline;
+    padding: 0 2px;
+}
+
+
+#username li a {
+    color: #3c3108;
+}
+
+#username li:before {
+	content: "| ";
+    color: black;
+}
+
+#username li:first-child:before {
+	content: "";
+}
+
+#username  a:hover {color: #800000; } /* regular link is maroon */
+
+#searchform {
+	position: absolute;
+	right: 3px;
+	top: 3px;
+	/* float: right; */
+	margin: 5px 10px;
+	padding: 0;
+	white-space: nowrap;
+	font-size: 13px;
+}
+
+*[dir="rtl"] #searchform {
+	float: left;
+}
+
+#searchform form div {
+    display: inline;
+}
+
+#sisternav 
+{
+position:absolute;
+bottom:0;
+right:0;
+}
+
+#sisternav ul 
+{
+display:inline;
+margin:0;
+padding:10px 10px 0 1px;
+list-style:none;
+}
+                  
+#sisternav li 
+{
+display:inline;
+float:left;
+background:url(../img/u-tab_off_ns1.png) no-repeat left top;
+margin:0;
+padding:0 0 0 5px;
+}
+
+#sisternav a 
+{
+float:left;
+font-size:0.8em;
+display:block;
+background:url(../img/u-tab_off_ns2.png) no-repeat right top;
+padding:8px 15px 3px 8px;
+text-decoration:none;
+font-weight:bold;
+color:#444;
+}
+
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#sisternav a {float:none;}
+/* End IE5-Mac hack */
+#sisternav a:hover {
+	color: #6d4c07; /* ubuntu dark brown */
+}
+
+#sisternav li:hover, #sisternav li:hover a 
+{
+background-position:0% -163px;
+	color: #000000; 
+}
+
+#sisternav li:hover a 
+{
+background-position:100% -163px;
+	color: #000000; 
+}
+
+#sisternav #current 
+{
+background:url(../img/u-tab_on_ns1.png) no-repeat left top;                
+}
+
+#sisternav #current a 
+{
+background:url(../img/u-tab_on_ns2.png) no-repeat right top;
+padding-bottom:4px;
+color:#000;
+}
+
+#sisternav #current a:hover
+{
+color: #000000; /* maroon */
+}
+
+#pagetrail {
+	white-space: nowrap;
+	margin: 0;
+	padding: 0 10px;
+	font-size: 0.85em;
+}
+
+#pagetrail a {
+	color: #C1B496; /* ubuntu dark tan */
+}
+
+*[dir="rtl"] #pagetrail {
+	clear: right;
+	text-align: right;
+}
+
+*[dir="ltr"] #pagetrail {
+	clear: left; 
+	text-align: left;
+}
+
+#pagetrail li {
+	float: left;
+	display: block;
+	padding: 2px 2px;
+	margin: 0 0 5px 0;
+}
+
+*[dir="rtl"] #pagetrail {
+	float: right;
+}
+
+/* XXX Warning: non-ascii characters! */
+/* NOTE: these are small things placed after your visited pages */
+#pagetrail li:after {
+	content: " » ";
+	color: black;
+	color: #C1B496; /* ubuntu dark tan */
+}
+
+*[dir="rtl"] #pagetrail li:after {
+	content: " « ";
+	color: #C1B496; /* ubuntu dark tan */
+}
+
+/* NOTE: this is the horizontal line across the page menu */
+#pageline {
+	clear: both;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	/* sync these values, line-height is needed for IE */
+		height: 4px;
+		line-height: 4px;
+	border-bottom: 1px solid #9C9C9C;
+       /* border-top: 1px solid #9C9C9C; */
+	background: #6d4c07; /* ubuntu dark brown */
+}
+
+.editbar {
+	margin: 0;
+	padding: 0 25px;
+	white-space: nowrap;
+	height: 30px;
+	background: white;
+	font-size: 0.85em;
+}
+
+*[dir="rtl"] .editbar {
+	clear: right;
+}
+
+*[dir="ltr"] .editbar {
+	clear: left;
+}
+
+.editbar form, .editbar form div {
+    display: inline;
+	margin: 0;
+}
+
+.editbar select {
+    font-size: 0.9em;
+    font-family: Arial, Lucida Grande, sans-serif;
+        border: solid 1px #C1B496; /* ubuntu dark tan */
+	background: white;
+	color: #2e2003; /* darker brown */
+}
+
+.editbar option {
+    font-size: 1em;
+    font-family: Arial, Lucida Grande, sans-serif;
+        border: dotted 1px white;
+	background: #F1F1ED; /* ubuntu near-white */
+	color: #6d4c07; /* ubuntu dark brown */
+}
+.editbar li {
+	float: left;
+	display: block;
+	padding: 0;
+	margin: 2px 6px;
+	color: #6d4c07; /* ubuntu dark brown */
+}
+
+*[dir="rtl"] .editbar li {
+	float: right;
+}
+
+#header .editbar {
+	border-bottom: 1px dotted #C1B496; /* ubuntu dark tan */
+	color: #6d4c07; /* ubuntu dark brown */
+}
+
+#footer .extranav {
+	border-top: 1px dotted #C1B496; /* ubuntu dark tan */
+}
+
+#footer .editbar {
+	border-bottom: 1px solid #6d4c07; /* ubuntu dark brown */
+}
+
+.extranav {
+	clear: both;
+	margin: 0 15px;
+	padding: 0 8px;
+	white-space: nowrap;
+	background: white;
+	font-size: 0.85em;
+}
+
+.extranav li {
+	float: right;
+	display: block;
+	padding: 0;
+	margin: 6px 8px;
+}
+
+*[dir="rtl"] .extranav li {
+	float: left;
+}
+
+#ubuntulinks {
+	text-align: center;
+}
+
+.editbar a, .editbar a:visited { color: #2e2003;} /* darker brown */
+.editbar a:hover {color: #800000; } /* ubuntu dark brown */
+
+#message {
+	clear: both;
+	margin: 0;
+	padding: 5px 10px;
+	border-bottom: 1px solid #C1B496; /* ubuntu dark tan */
+	background: #F1F1ED; /* ubuntu near-white */
+	font-size: 0.75em;
+}
+
+#message p{
+	margin: 5px 0;
+	padding: 0;
+	font-weight: bold;
+	line-height: 1em;
+}
+
+#message div.buttons {
+	font-weight: normal;
+}
+
+/* classic had form.dialog; modern doesn't. -- Heather */
+form.dialog {
+    margin: 0 15px;
+        border: solid 1px #C1B496; /* ubuntu dark tan */
+        background-color: #edddba; /* ubuntu pale orange */
+        color: #6d4c07; /* ubuntu dark brown */
+}
+
+.dialog form {
+    margin: 0 15px;
+        border: solid 1px #C1B496; /* ubuntu dark tan */
+        background-color: #edddba; /* ubuntu pale orange */
+        color: #6d4c07; /* ubuntu dark brown */
+}
+
+.dialog td {
+    border: none;
+    padding: 5px;
+}
+
+.dialog td.label {
+    text-align: right;
+    font-weight: bold;
+    width: 25%;
+}
+
+*[dir="rtl"] .dialog td.label {
+    text-align: left;
+}
+
+.dialog td.content input {
+    width: 100%;
+}
+
+#page {
+	clear: both;
+	background-color: white;
+	margin: 0;
+	padding: 5px 30px 20px 30px;
+}
+
+/* We use here dumb css1 ids because of IE suckiness */
+#editor-textarea, #editor-comment {
+    width: 100%;
+}
+
+#preview {
+	border: 2px solid #C1B496; /* ubuntu dark tan */
+	padding: 2px 15px 10px 15px;
+	background: url(../img/u-draft.png);
+}
+
+#footer {
+	clear: both;
+    margin: 0;
+    padding: 0;
+    background: #DBBA75; /* ubuntu orange */
+	font-size: 10px;
+}
+
+#credits, #version, #timings{
+	margin: 3px 6px;
+	padding: 0;
+	text-align: center;
+	color: #6C7680;
+	font-size: 10px;
+}
+
+#credits li, #timings li {
+	display: inline;
+	padding: 0 2px;
+	margin: 0 4px;
+}
+
+#credits img {
+	vertical-align: middle;
+}
+
+/* diffs from classic */
+.diff {
+	width:99%;
+}
+
+.diff-header {
+	font-weight: bold;
+}
+
+.diff-title {
+	background-color: #C1B496; /* ubuntu dark tan */
+}
+
+.diff-added {
+	background-color: #edddba; /* ubuntu pale orange */
+	vertical-align: sub;
+}
+
+.diff-removed {
+	background-color: #FFFFE0; /* classic pale yellow */
+	vertical-align: sub;
+}
+
+.diff-added span {
+	background-color: #DBBA75; /* ubuntu orange */
+}
+
+.diff-removed span {
+	background-color: #FFFF80; /* classic yellow */
+}
+
+.searchresult dd span {
+	font-weight: bold;
+}
+

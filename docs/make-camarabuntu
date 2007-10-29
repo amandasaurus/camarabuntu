@@ -1,0 +1,27 @@
+How to get started:
+
+download the edubuntu dapper CD iso.
+It has the following MD5 sum: 18c6d57edd3764aca3e6d3a6cacadca7
+sha1sum: 4948b30bfce2c0ac40b49bcd453d4d0f7f95da6b
+
+Extract it into the folder 'dapper'
+./bin/extract-cd-contents.sh edubuntu-6.06.1-install-i386.iso dapper
+
+Copy across the files:
+gunzip --to-stdout isolinux/splash.pcx.gz > dapper/isolinux/splash.pcx
+cp ./isolinux/isolinux.cfg dapper/isolinux/isolinux.cfg
+cp preseed/camarabuntu-cd-install.seed dapper/preseed/
+
+Now we download all the extra codecs:
+./bin/get-deb-dependencies.py -d debs/media -l ./dapper/dists/dapper/main/ -l ./dapper/dists/dapper/restricted/ -r 'http://ie.archive.ubuntu.com/ubuntu dapper universe' -r 'http://ie.archive.ubuntu.com/ubuntu dapper multiverse' -r "http://packages.medibuntu.org/ dapper free" -r "http://packages.medibuntu.org/ dapper non-free" -r "http://ie.archive.ubuntu.com/ubuntu dapper main" -r "http://ie.archive.ubuntu.com/ubuntu dapper restricted"  gstreamer0.10-ffmpeg gstreamer0.10-gl gstreamer0.10-plugins-base gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-ugly gstreamer0.10-plugins-ugly-multiverse w32codecs
+
+Now we create all the camara dependencies
+(TODO finish this)
+
+Now add all our debs to the CD:
+./bin/add-debs-to-cd-image.py  -d dapper -k 4F2D0133 --ubuntu-keyring ./debs/sources/ubuntu-keyring-2005.01.12.1/ --indices ./debs/indices/ *deb
+This will take a while, blah blah
+
+make the CD:
+ ./bin/make-cd-iso.py  -d dapper -f camarabuntu.iso -n Camarabuntu
+

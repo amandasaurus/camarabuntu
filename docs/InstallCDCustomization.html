@@ -1,0 +1,742 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="robots" content="index,nofollow"><title>InstallCDCustomization - Community Ubuntu Documentation</title>
+
+
+
+
+<script type="text/javascript">
+<!--// common functions
+
+// We keep here the state of the search box
+searchIsDisabled = false;
+
+function searchChange(e) {
+    // Update search buttons status according to search box content.
+    // Ignore empty or whitespace search term.
+    var value = e.value.replace(/\s+/, '');
+    if (value == '' || searchIsDisabled) { 
+        searchSetDisabled(true);
+    } else {
+        searchSetDisabled(false);
+    }
+}
+
+function searchSetDisabled(flag) {
+    // Enable or disable search
+    document.getElementById('fullsearch').disabled = flag;
+    document.getElementById('titlesearch').disabled = flag;
+}
+
+function searchFocus(e) {
+    // Update search input content on focus
+    if (e.value == 'Search') {
+        e.value = '';
+        e.style.color = 'black';
+        searchIsDisabled = false;
+    }
+}
+
+function searchBlur(e) {
+    // Update search input content on blur
+    if (e.value == '') {
+        e.value = 'Search';
+        e.style.color = 'gray';
+        searchIsDisabled = true;
+    }
+}
+
+function actionsMenuInit(title) {
+    // Initiliaze action menu
+    for (i = 0; i < document.forms.length; i++) {
+        var form = document.forms[i];
+        if (form.className == 'actionsmenu') {
+            // Check if this form needs update
+            var div = form.getElementsByTagName('div')[0];
+            var label = div.getElementsByTagName('label')[0];
+            if (label) {
+                // This is the first time: remove label and do buton.
+                div.removeChild(label);
+                var dobutton = div.getElementsByTagName('input')[0];
+                div.removeChild(dobutton);
+                // and add menu title
+                var select = div.getElementsByTagName('select')[0];
+                var item = document.createElement('option');
+                item.appendChild(document.createTextNode(title));
+                item.value = 'show';
+                select.insertBefore(item, select.options[0]);
+                select.selectedIndex = 0;
+            }
+        }
+    }
+}
+//-->
+</script>
+
+<link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="InstallCDCustomization_files/common.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="screen" href="InstallCDCustomization_files/screen.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="print" href="InstallCDCustomization_files/print.css">
+<link rel="stylesheet" type="text/css" charset="utf-8" media="projection" href="InstallCDCustomization_files/projection.css">
+
+<link rel="Start" href="https://help.ubuntu.com/community/UserDocumentation">
+<link rel="Alternate" title="Wiki Markup" href="https://help.ubuntu.com/community/InstallCDCustomization?action=raw">
+<link rel="Alternate" media="print" title="Print View" href="https://help.ubuntu.com/community/InstallCDCustomization?action=print">
+<link rel="Search" href="https://help.ubuntu.com/community/FindPage">
+<link rel="Index" href="https://help.ubuntu.com/community/TitleIndex">
+<link rel="Glossary" href="https://help.ubuntu.com/community/WordIndex">
+<link rel="Help" href="https://help.ubuntu.com/community/HelpOnFormatting"></head><body dir="ltr" lang="en">
+
+    <script xmlns="" src="InstallCDCustomization_files/urchin.js" type="text/javascript"></script>
+            <script xmlns="" type="text/javascript"><![CDATA[
+                    _uacct = "UA-1018242-8";
+                    urchinTracker();
+            ]]></script>
+<div id="header">
+<div id="mastwrap"><div id="masthead">
+<div id="logo"><a href="https://help.ubuntu.com/community/UserDocumentation">Community Ubuntu Documentation</a></div>
+
+<form id="searchform" method="get" action="">
+<div>
+<input name="action" value="fullsearch" type="hidden">
+<input name="context" value="180" type="hidden">
+<label style="display: none;" for="searchinput">Search:</label>
+<input style="color: gray;" id="searchinput" name="value" value="" size="20" onfocus="searchFocus(this)" onblur="searchBlur(this)" onkeyup="searchChange(this)" onchange="searchChange(this)" alt="Search" type="text">
+<input disabled="disabled" id="titlesearch" name="titlesearch" value="Titles" alt="Search Titles" type="submit">
+<input disabled="disabled" id="fullsearch" name="fullsearch" value="Text" alt="Search Full Text" type="submit">
+</div>
+</form>
+<script type="text/javascript">
+<!--// Initialize search form
+var f = document.getElementById('searchform');
+f.getElementsByTagName('label')[0].style.display = 'none';
+var e = document.getElementById('searchinput');
+searchChange(e);
+searchBlur(e);
+//-->
+</script>
+
+
+  <div id="sisternav">
+      <ul>
+        <li id="plain">
+            <a href="https://help.ubuntu.com/6.06" accesskey="t">6.06 LTS</a>
+        </li>
+        <li id="plain">
+            <a href="https://help.ubuntu.com/6.10" accesskey="t">6.10</a>
+        </li>
+        <li id="plain">
+            <a href="https://help.ubuntu.com/7.04" accesskey="t">7.04</a>
+        </li>
+        <li id="current">
+            <a href="https://help.ubuntu.com/community" accesskey="t">Community Docs</a>
+        </li>
+      </ul>
+  </div>
+
+</div></div>
+
+<ul class="extranav">
+<li><a href="https://help.ubuntu.com/community/UserDocumentation">User Documentation</a></li>
+</ul>
+<ul class="editbar">
+<li><a href="https://help.ubuntu.com/community/UserPreferences">Login to edit</a></li>
+</ul>
+
+</div>
+
+<div id="page" dir="ltr" lang="en"><!-- start page -->
+
+
+<h1 id="title"><a title="Click to do a full-text search for this title" href="https://help.ubuntu.com/community/InstallCDCustomization?action=fullsearch&amp;value=linkto%3A%22InstallCDCustomization%22&amp;context=180">InstallCDCustomization</a></h1>
+<div id="content" dir="ltr" lang="en">
+<a id="top"></a>
+
+<h2 id="head-5192ce1e24c39e2c219ee84c77d1facc67df36b6">Introduction</h2>
+
+<div>
+<table style="margin: 0pt 0pt 1em 1em; background: rgb(241, 241, 237) none repeat scroll 0%; float: right; font-size: 0.9em; width: 40%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+<tbody><tr>
+<td style="padding: 0.5em;">
+<p><strong>Contents</strong><br>
+</p><ol>
+
+<li>
+<a href="#head-5192ce1e24c39e2c219ee84c77d1facc67df36b6">Introduction</a>
+</li>
+
+<li>
+<a href="#head-9d1a3d714aed40c91816f80ab370b9e2f40a85d7">Copy the CD to your hard drive</a>
+</li>
+
+<li>
+<a href="#head-d2e2ac6138c17dbdea4fdc90935c64eadf6388d7">Modify installer behaviour using a Preseed file</a>
+<ol>
+
+<li>
+<a href="#head-7dcb221f59b638ccc230c960b84f7142cb529598">Changing isolinux.cfg to identify your preseed</a>
+</li>
+
+<li>
+<a href="#head-8146e87a03e53f7f2e8054e8a5357ce73328a069">Writing the preseed file</a>
+<ol>
+
+<li>
+<a href="#head-ef2e9dd3852d43c576419b138c08a8badb5fb201">Installing extra packages in your preseed file</a>
+</li>
+
+<li>
+<a href="#head-d4564e7c1ca9ba83039194914c7a038f82386708">Installing language support</a>
+</li>
+
+</ol>
+
+</li>
+
+</ol>
+
+</li><li>
+<a href="#head-0b4ac1d7b5afcc2896ed74e3f4db510e78b6dbd9">Modify pool structure to include more packages</a>
+<ol>
+
+<li>
+<a href="#head-a281fb90fe726169881eb2bc5b7538bd2c797894">Create an "Extras" component</a>
+</li>
+
+<li>
+<a href="#head-c2ca6d4f437c6eb289c74da5e2de3d07e0e7ec6c">Generating a new ubuntu-keyring .deb to sign your CD</a>
+</li>
+
+<li>
+<a href="#head-64f09b8efc91c8720625d786644a5925baa0e765">Building the repository with apt-ftparchive</a>
+</li>
+
+</ol>
+
+</li><li>
+<a href="#head-30cfb1b3b402eb06607063a07b0be1cf36bf6370">Burning the CD</a>
+<ol>
+
+<li>
+<a href="#head-5ae85e13446f4f6f4894a0229eaddeebd9110e47">Building the ISO image</a>
+</li>
+
+<li>
+<a href="#head-b608d9bfa1a6ea622a06fa8eb631b14cfd9a21cd">Burning the image to CD</a>
+</li>
+
+</ol>
+
+</li><li>
+<a href="#head-9737bc717e810989d4b227c3f20f8104fedddbcd">Testing</a>
+</li>
+
+<li>
+<a href="#head-1bdc2fc30bfeec710e57a255f742eaa29a84dac0">Troubleshooting</a>
+</li>
+
+<li>
+<a href="#head-5d88ebbde02f5748aa759a85a490ce6e75581e31">See also</a>
+</li>
+
+</ol>
+
+</td>
+</tr>
+</tbody></table>
+</div>
+<p>The process of customizing or "remastering" Ubuntu install CDs is
+not especially complex, but it is a little tedious and finicky. This
+page documents all the problems you might find; if it doesn't, please
+edit it! </p>
+<p>The Ubuntu install CD (since Ubuntu 6.06, the 'alternative install'
+or 'server' CD) has three main parts: a boot-loader (ISOLINUX on
+AMD64/x86 systems, yaboot on PowerPC) and its configuration, which
+start everything up; debian-installer (also known as d-i), which in
+this case is really a specialized miniature Ubuntu system; and a
+Debian-style repository structure, which is what takes up all that
+space on the disk in the directories "pool" and "dists". Building a new
+CD may involve modifications to all three parts. </p>
+<p>This page shows a simple recipe for customizing the CD. It assumes that you copy the contents of the install CD to <tt>/opt/build/</tt> on your local system and create a couple of other dirs in <tt>/opt/</tt>. Modify as needed. </p>
+
+<h2 id="head-9d1a3d714aed40c91816f80ab370b9e2f40a85d7">Copy the CD to your hard drive</h2>
+
+<p><img src="InstallCDCustomization_files/IconsPage.png" alt="warning.png"> This guide is for the Alternative Install or Server Install CDs; there is another page referrring to <a href="https://help.ubuntu.com/community/LiveCDCustomization"> customization of the Desktop/Live CD</a>. </p>
+<p>Copy the entire installation CD to a directory on your hard drive.
+This guide will assume your CD image is in /opt/cd-image/, but you can
+put it wherever you like. It will take around 1GB of hard drive space. </p>
+<p>If you have an ISO file, you can mount it and copy files out of it without burning it to CD: <tt>mount&nbsp;-o&nbsp;loop&nbsp;/path/to/iso&nbsp;/some/mountpoint</tt>. </p>
+<p>You can use <strong>rsync</strong> to copy the CD, or just </p>
+
+<pre>mkdir -p /opt/cd-image
+cp -rT /cdrom /opt/cd-image
+</pre>
+<p>Be sure to catch the folder <em>.disk</em> - if you try and copy /cdrom/*, it will ignore the .disk folder, as Bash expands the * to mean "everything it can see". </p>
+
+<h2 id="head-d2e2ac6138c17dbdea4fdc90935c64eadf6388d7">Modify installer behaviour using a Preseed file</h2>
+
+<p>When the CD boots up, a Linux kernel is started and the installation
+tasks are initiated. The installer's default behavior can be modified
+through the use of a "preseed" file, which feeds d-i answers to
+questions normally asked by debconf, or in other contexts. If you look
+in the <tt>preseed</tt> folder in the install CD, you'll see that
+certain options (e.g. "server", "expert", "oem") already have preseed
+files assigned to them. The Edgy (6.10) <a class="external" href="https://help.ubuntu.com/6.10/ubuntu/installation-guide/i386/appendix-preseed.html"><img src="InstallCDCustomization_files/u-www.png" alt="[WWW]" height="16" width="16"> installation guide</a> has a detailed appendix on preseeding (although see below for details on differences between Edgy and earlier versions). </p>
+<p>Suppose you are installing Ubuntu on a bunch of identical computers,
+and you already know the answers to certain questions (what country and
+time zone you're in, what keyboard you have, how the network should be
+configured, how you want to partition the hard disk, etc). You can
+"preseed" the answers to these questions in a very simple configuration
+file. </p>
+
+<h3 id="head-7dcb221f59b638ccc230c960b84f7142cb529598">Changing isolinux.cfg to identify your preseed</h3>
+
+<p>We will create a preseed file called 'firewall.seed', which will
+live in the /preseed folder of the CD-ROM. We tell d-i where to find
+this file by modifying the boot-loader configuration file, located in
+isolinux/isolinux.cfg, to pass appropriate parameters on the kernel
+command line. In /opt/cd-image/isolinux/isolinux.cfg, add a new section
+labeled like this: </p>
+
+<pre>LABEL firewall
+  menu label ^Firewall installation
+  kernel /install/vmlinuz
+  append  preseed/file=/cdrom/preseed/firewall.seed debian-installer/locale=en_NZ kbd-chooser/method=us initrd=/install/initrd.gz ramdisk_size=16384 root=/dev/ram rw quiet --
+</pre>
+<p>If you want to set the default action to booting with your custom seed, change the DEFAULT line to read 'DEFAULT firewall'. </p>
+<p>You must specify a locale and keyboard on the command line, as these
+questions are asked before the seed is loaded. You can also set
+DEBCONF_PRIORITY here to ensure you don't see any unnecessary debconf
+questions. </p>
+
+<h3 id="head-8146e87a03e53f7f2e8054e8a5357ce73328a069">Writing the preseed file</h3>
+
+<p>A preseed file has 4 fields per line: </p>
+<ol type="1">
+<li><p>identity of the program which will pick up this command </p>
+</li>
+<li><p>name of the variable whose value will be passed </p>
+</li>
+<li><p>variable type </p>
+</li>
+<li><p>value of variable </p>
+</li>
+</ol>
+<p>It looks something like this (from the default ubuntu-server.seed on the 6.06 CD): </p>
+<ul>
+<li style="list-style-type: none;">
+<pre># Always install the server kernel.
+d-i     base-installer/kernel/override-image    string linux-server
+# Don't install usplash.
+d-i     base-installer/kernel/linux/extra-packages-2.6  string
+# Desktop system not installed; don't waste time and disk space copying it.
+d-i     archive-copier/desktop-task     string ubuntu-standard
+d-i     archive-copier/ship-task        string
+# Only install the standard system and language packs.
+d-i     pkgsel/install-pattern  string ~t^ubuntu-standard$
+d-i     pkgsel/language-pack-patterns   string
+# No language support packages.
+d-i     pkgsel/install-language-support boolean false
+</pre>
+</li>
+</ul>
+<p><img src="InstallCDCustomization_files/IconsPage_002.png" alt="important.png"> The version of this file on some Breezy CD images was buggy: it set base-config/package-selection to <tt>"~tubuntu-standard"</tt> rather than <tt>"~t^ubuntu-standard$"</tt>. Use the new format in preference; the old one will break with Ubuntu 6.06 and newer.) </p>
+<p><img src="InstallCDCustomization_files/IconsPage_002.png" alt="important.png">  d-i expects there to be <a class="external" href="http://d-i.alioth.debian.org/manual/en.i386/apbs03.html"><img src="InstallCDCustomization_files/u-www.png" alt="[WWW]" height="16" width="16"> exactly one tab or space between variable type and variable value</a> (any other space is seen as being part of the value) </p>
+<p>The easiest way to create a preseed file is to start with an example and modify it: </p>
+<ol type="1">
+<li><p>You could check out <a class="external" href="http://wiki.debian.org/DebianInstaller/Preseed"><img src="InstallCDCustomization_files/u-www.png" alt="[WWW]" height="16" width="16"> Debian's wiki page on preseeding the installer</a> - 6.06 and higher use the Etch version of the Debian installer. </p>
+</li>
+<li><p>The Edgy (6.10) <a class="external" href="https://help.ubuntu.com/6.10/ubuntu/installation-guide/i386/preseed-contents.html"><img src="InstallCDCustomization_files/u-www.png" alt="[WWW]" height="16" width="16"> install guide</a> has examples of many common preseed directives. (Bear in mind that you may need to modify some to work on older versions.) </p>
+</li>
+<li><p>If you can't find the option you're looking for you can generate
+a comprehensive preseed file based on your own install time choices by
+using <tt>debconf-get-selections</tt> </p>
+</li>
+</ol>
+<p><tt>debconf-get-selections</tt> usage: 
+</p>
+<pre>sudo apt-get install debconf-utils    # It is part of the debconf-utils package.
+debconf-get-selections --installer &gt; somefile.txt
+debconf-get-selections &gt;&gt; somefile.txt
+</pre>
+<p>This will output a list of all debconf options you've chosen
+throughout your install; you can pick options out of this and put them
+into your preseed file. </p>
+<p><img src="InstallCDCustomization_files/IconsPage.png" alt="warning.png"> debconf-get-selections prints <strong>2</strong>
+spaces between variable type and variable value. You need to change
+this to one space before putting the line in a preseed file. </p>
+
+<h4 id="head-ef2e9dd3852d43c576419b138c08a8badb5fb201">Installing extra packages in your preseed file</h4>
+
+<p>base-config has been removed from debian-installer since Ubuntu 6.06. Use: </p>
+
+<pre>d-i     pkgsel/install-pattern          string ~t^ubuntu-standard$|~n^openssh-server$
+</pre>
+
+<h4 id="head-d4564e7c1ca9ba83039194914c7a038f82386708">Installing language support</h4>
+
+<p>A different mechanism is used to install additional languages.
+Preseed the detailed locale question asked by the installer in expert
+mode. See the first column of <tt>/usr/share/i18n/SUPPORTED</tt> for the locale names you can use here.  For example, to add support for Bengali and Tamil, use this line: </p>
+
+<pre>d-i localechooser/supported-locales multiselect bn_IN, ta_IN
+</pre>
+
+<h2 id="head-0b4ac1d7b5afcc2896ed74e3f4db510e78b6dbd9">Modify pool structure to include more packages</h2>
+
+<p>Probably the prime motivation to build your own install CDs is to
+modify which packages are installed; in particular you may want to add
+some packages to the CD. </p>
+<p>The easiest way to do this is to build an 'extras' repository
+structure, containing only your extra .debs, and merge these into the
+CD file hierarchy before rebuilding the .ISO image. This guide will
+step you through how to do this. </p>
+<p>This requires you to generate the Packages files that defines what
+files are in your repository; the Release file that indexes your
+Packages files, and the signed Release.gpg file, approving the
+repository as being official. </p>
+
+<h3 id="head-a281fb90fe726169881eb2bc5b7538bd2c797894">Create an "Extras" component</h3>
+
+<p>Create directories for your new component (substituting your version where appropriate): </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>cd /opt/cd-image
+mkdir -p dists/dapper/extras/binary-i386 pool/extras/ isolinux preseed
+</pre>
+</li>
+</ul>
+<p>Put all the extra .debs you want on your CD into <tt>pool/extras</tt>. </p>
+<p>Create the file <tt>dists/dapper/extras/binary-i386/Release</tt> with the following content: </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>Archive: dapper
+Version: 6.06
+Component: extras
+Origin: Ubuntu
+Label: Ubuntu
+Architecture: i386
+</pre>
+</li>
+</ul>
+<p>On the <a href="https://help.ubuntu.com/community/InstallCDCustomization/Scripts">scripts page</a>
+there is a useful script that will strip out all of the packages from
+your CD image that are not currently installed. You will need to run <tt>apt-ftparchive</tt> (below) to generate the Packages file. </p>
+
+<h3 id="head-c2ca6d4f437c6eb289c74da5e2de3d07e0e7ec6c">Generating a new ubuntu-keyring .deb to sign your CD</h3>
+
+<p>In order to sign the Release file, we need to use GPG. The install
+system will then check the signature against the public keys held in
+the package ubuntu-keyring. You do not have a private key that matches
+one of the ones in the shipped ubuntu-keyring, so we need to build a
+custom version of the ubuntu-keyring package. Install the <tt>gnupg</tt> package if you do not have it already. </p>
+<p>To create a signing key, enter <tt>gpg&nbsp;--gen-key</tt>. Accept
+the defaults, (for this use, it is probably OK to use "No expiry"). For
+your Real Name and E-mail address, you might like to use something like
+"XXX Signing Key" and "<a href="mailto:packages@xxx.example.org"><img src="InstallCDCustomization_files/u-email.png" alt="[MAILTO]" height="13" width="23"> packages@xxx.example.org</a>". Enter an appropriate passphrase. </p>
+<p>In another directory (I use <tt>/opt/build/</tt>), we will download
+the source for the ubuntu-keyring package, unpack it, add our own GPG
+key, and rebuild the package. These steps import the 2 Ubuntu public
+signing keys into your main keyring, then exports them, along with your
+own public signing key, into a replacement keyring. "YOURKEYID" should
+be replaced with the 8-digit hexadecimal code that gpg tells you when
+you do the --list-keys command."Signing Key Name" is what you used in
+the previous step, when running <tt>gpg&nbsp;--gen-key</tt>. </p>
+<p>To clarify, below is an example 'gpg --list-keys' response. In this
+example, "YOURKEYID" immediately follows the '/' on the line beginning
+with 'pub' (which in this example is '437D05B5'.) </p>
+
+<pre>gpg --list-keys
+pub   1024D/437D05B5 2006-09-08
+uid                  XXX Signing Key &lt;packages@xxx.example.org&gt;
+sub   2048g/79164387 2006-09-08
+</pre>
+<p>Here is an example, which you will need to customize to suit your own setup: </p>
+
+<pre>cd /opt/build
+sudo apt-get install fakeroot   # requires the fakeroot package which may not be installed on your system.
+apt-get source ubuntu-keyring
+cd ubuntu-keyring-2005.01.12.1/keyrings
+gpg --import &lt; ubuntu-archive-keyring.gpg
+gpg --list-keys "Signing Key Name"
+gpg --export FBB75451 437D05B5 YOURKEYID &gt; ubuntu-archive-keyring.gpg
+cd ..    # you are now on ubuntu-keyring-2005.01.12.1
+dpkg-buildpackage -rfakeroot -m"Your Name &lt;your.email@your.host&gt;" -kYOURKEYID
+cd ..  # you are now on the directory where you started, in the example, /opt/build
+cp ubuntu-keyring*deb /opt/cd-image/pool/main/u/ubuntu-keyring
+</pre>
+<p>You will end up with a udeb file for the installer, and a .deb file for the system.  Both files need to be copied into the <strong>main</strong> component of your CD, because the CD will not check the extras directory. </p>
+
+<h3 id="head-64f09b8efc91c8720625d786644a5925baa0e765">Building the repository with apt-ftparchive</h3>
+
+<p><tt>apt-ftparchive</tt> builds the <tt>Packages</tt> and <tt>Packages.gz</tt> files, needed by the installer. In order to use <tt>apt-ftparchive</tt> we will need to provide it with some configuration and some index files. </p>
+<p>We will put the index files in <tt>/opt/indices</tt>: </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>mkdir -p /opt/indices /opt/apt-ftparchive
+cd /opt/indices/
+DIST=dapper; wget http://archive.ubuntu.com/ubuntu/indices/override.$DIST.{extra.main,main,main.debian-installer,restricted,restricted.debian-installer}
+</pre>
+</li>
+</ul>
+<p>Create the files <tt>apt-ftparchive-deb.conf</tt>, <tt>apt-ftparchive-udeb.conf</tt>, <tt>apt-ftparchive-extras.conf</tt>, and <tt>release.conf</tt> in a directory (<tt>/opt/apt-ftparchive</tt>), substituting <tt>/opt/cd-image/</tt> for the path to your CD image directory, and <tt>/opt/indices/</tt> for the location of the index files, if they differ. </p>
+<p><span class="u">/opt/apt-ftparchive/apt-ftparchive-deb.conf:</span> </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>Dir {
+  ArchiveDir "/opt/cd-image/";
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/main" {
+  Packages "dists/dapper/main/binary-i386/Packages";
+  BinOverride "/opt/indices/override.dapper.main";
+  ExtraOverride "/opt/indices/override.dapper.extra.main";
+};
+
+BinDirectory "pool/restricted" {
+ Packages "dists/dapper/restricted/binary-i386/Packages";
+ BinOverride "/opt/indices/override.dapper.restricted";
+};
+
+Default {
+  Packages {
+    Extensions ".deb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+</pre>
+</li>
+</ul>
+<p>The <a class="nonexistent" href="https://help.ubuntu.com/community/ExtraOverride">ExtraOverride</a>
+component above is needed to add the Task header to main packages,
+referenced from the preseed file with ~t&lt;task name&gt;. This is not
+supplied - but can be extracted from the existing main Packages file
+with a simple perl script :- </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>#! /usr/bin/perl
+# extraoverride.pl
+# generate ExtraOverride file
+# use as follows :-
+# extraoverride.pl &lt; /opt/cd-image/dists/dapper/main/binary-i386/Packages &gt; /opt/indices/override.dapper.extra.main
+
+while (&lt;&gt;) {
+        chomp;
+        next if /^ /;
+        if (/^$/ &amp;&amp; defined($task)) {
+                print "$package Task $task\n";
+                undef $package;
+                undef $task;
+        }
+        ($key, $value) = split /: /, $_, 2;
+        if ($key eq 'Package') {
+                $package = $value;
+        }
+        if ($key eq 'Task') {
+                $task = $value;
+        }
+}
+</pre>
+</li>
+</ul>
+<p><span class="u">/opt/apt-ftparchive/apt-ftparchive-udeb.conf:</span> </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>Dir {
+  ArchiveDir "/opt/cd-image/";
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/main" {
+  Packages "dists/dapper/main/debian-installer/binary-i386/Packages";
+  BinOverride "/opt/indices/override.dapper.main.debian-installer";
+};
+
+BinDirectory "pool/restricted" {
+  Packages "dists/dapper/restricted/debian-installer/binary-i386/Packages";
+  BinOverride "/opt/indices/override.dapper.restricted.debian-installer";
+};
+
+Default {
+  Packages {
+    Extensions ".udeb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+</pre>
+</li>
+</ul>
+<p><span class="u">/opt/apt-ftparchive/apt-ftparchive-extras.conf:</span> </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>Dir {
+  ArchiveDir "/opt/cd-image/";
+};
+
+TreeDefault {
+  Directory "pool/";
+};
+
+BinDirectory "pool/extras" {
+  Packages "dists/dapper/extras/binary-i386/Packages";
+};
+
+Default {
+  Packages {
+    Extensions ".deb";
+    Compress ". gzip";
+  };
+};
+
+Contents {
+  Compress "gzip";
+};
+</pre>
+</li>
+</ul>
+<p><span class="u">release.conf</span> </p>
+<p>This is the configuration file for apt-ftparchive.  Change to suit your distribution version: </p>
+<ul>
+<li style="list-style-type: none;">
+<pre>APT::FTPArchive::Release::Origin "Ubuntu";
+APT::FTPArchive::Release::Label "Ubuntu";
+APT::FTPArchive::Release::Suite "dapper";
+APT::FTPArchive::Release::Version "6.06";
+APT::FTPArchive::Release::Codename "dapper";
+APT::FTPArchive::Release::Architectures "i386";
+APT::FTPArchive::Release::Components "main restricted extras";
+APT::FTPArchive::Release::Description "Ubuntu 6.06 LTS";
+</pre>
+</li>
+</ul>
+<p>To build the repository, sign it, and update the MD5SUM file, you can use a script like this: </p>
+
+<pre>BUILD=/opt/cd-image
+APTCONF=/opt/apt-ftparchive/release.conf
+DISTNAME=dapper
+
+pushd $BUILD
+apt-ftparchive -c $APTCONF generate /opt/apt-ftparchive/apt-ftparchive-deb.conf
+apt-ftparchive -c $APTCONF generate /opt/apt-ftparchive/apt-ftparchive-udeb.conf
+apt-ftparchive -c $APTCONF generate /opt/apt-ftparchive/apt-ftparchive-extras.conf
+apt-ftparchive -c $APTCONF release $BUILD/dists/$DISTNAME &gt; $BUILD/dists/$DISTNAME/Release
+
+gpg --default-key "YOURKEYID" --output $BUILD/dists/$DISTNAME/Release.gpg -ba $BUILD/dists/$DISTNAME/Release
+find . -type f -print0 | xargs -0 md5sum &gt; md5sum.txt
+popd
+</pre>
+
+<h2 id="head-30cfb1b3b402eb06607063a07b0be1cf36bf6370">Burning the CD</h2>
+
+<p>At this point, you have a directory which is ready to be collected into an .ISO file and then burnt to a CD. </p>
+
+<h3 id="head-5ae85e13446f4f6f4894a0229eaddeebd9110e47">Building the ISO image</h3>
+
+<p><span class="u">x86 and AMD64</span> </p>
+
+<pre>IMAGE=custom.iso
+BUILD=/opt/cd-image/
+
+mkisofs -r -V "Custom Ubuntu Install CD" \
+            -cache-inodes \
+            -J -l -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat -no-emul-boot \
+            -boot-load-size 4 -boot-info-table \
+            -o $IMAGE $BUILD
+</pre>
+<p><span class="u">Power PC</span> </p>
+<p>Download <a class="external" href="http://people.ubuntu.com/%7Ecjwatson/hfs.map"><img src="InstallCDCustomization_files/u-www.png" alt="[WWW]" height="16" width="16"> the HFS map</a>, then use the following command: 
+</p>
+<pre>IMAGE=custom.iso
+BUILD=/opt/cd-image/
+
+mkisofs -r -V "Custom Ubuntu Install CD" \
+            --netatalk -hfs -probe -map hfs.map \
+            -chrp-boot -iso-level 2 -part -no-desktop \
+            -hfs-bless $BUILD/install \
+            -hfs-volid Ubuntu/PowerPC_dapper \
+            -o $IMAGE $BUILD
+</pre>
+<p><span class="u">ia64</span> 
+</p>
+<pre>IMAGE=custom.iso
+BUILD=/opt/cd-image/
+
+mkisofs -r -V 'Custom Ubuntu Install CD' \
+        -o $IMAGE -no-emul-boot \
+        -J -b boot/boot.img -c boot/boot.catalog $BUILD
+</pre>
+<ul>
+<li style="list-style-type: none;"><p>$IMAGE is just the location of your iso image. </p>
+</li>
+</ul>
+
+<h3 id="head-b608d9bfa1a6ea622a06fa8eb631b14cfd9a21cd">Burning the image to CD</h3>
+
+<p>To detect the location of your CD drive, try <tt>cdrecord&nbsp;--scanbus</tt>.  For a primary IDE CD drive on /dev/hdc: </p>
+
+<pre>sudo nice -18 cdrecord dev=ATA:0,1,0 --speed=24 --blank=fast -v -gracetime=2 -tao $IMAGE
+</pre>
+<p>You will burn a lot of coasters in experimenting with this process, so please use rewritable media! </p>
+
+<h2 id="head-9737bc717e810989d4b227c3f20f8104fedddbcd">Testing</h2>
+
+<p>You can now boot off your CD. Select the new menu item you created.
+If you've used preseeding to stop the CD asking questions, the
+installation could be totally automatic. </p>
+
+<h2 id="head-1bdc2fc30bfeec710e57a255f742eaa29a84dac0">Troubleshooting</h2>
+
+<ul>
+<li><p> If your CD fails to read, try re-burning it, possibly at a slower speed. </p>
+</li>
+<li><p> If you get a red d-i screen, check the error message (use
+Alt-F2, Alt-F3 etc to cycle through the terminals to read the log), and
+fix your CD appropriately. </p>
+</li>
+</ul>
+
+<h2 id="head-5d88ebbde02f5748aa759a85a490ce6e75581e31">See also</h2>
+
+<p>Check out some <a href="https://help.ubuntu.com/community/InstallCDCustomization/Scripts">install CD customization scripts</a> that can be used to automate this process. </p>
+<a id="bottom"></a>
+
+</div>
+<p id="pageinfo" class="info" dir="ltr" lang="en">last edited 2007-06-04 10:03:27 by <span title="202-89-158-1.dyn-dsl.ubs.qsi.net.nz"><a href="https://help.ubuntu.com/community/CraigBox">CraigBox</a></span></p>
+
+</div> <!-- end page -->
+
+
+<div id="footer">
+
+  <div id="ubuntulinks">
+     © 2007 <a href="http://www.canonical.com/">Canonical Ltd</a>. Ubuntu, Kubuntu, Edubuntu and Canonical are registered trademarks of Canonical Ltd.<br>
+     <a href="https://help.ubuntu.com/community/WikiGuide">Feedback</a> — 
+     <a href="https://help.ubuntu.com/community/License">Legal</a> — 
+     <a href="https://help.ubuntu.com/community/Credits">Credits</a>
+	<br>
+	<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">
+	<img alt="Creative Commons License" style="border-width: 0pt;" src="InstallCDCustomization_files/80x15.png">
+	</a>
+  </div>
+
+
+</div>
+</body></html>
