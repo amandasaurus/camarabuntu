@@ -280,7 +280,7 @@ class Repository():
     def __init__(self, uri, download_callback_func=None):
         self.packages = []
         self.type = None
-        if os.path.isdir( uri ):
+        if os.path.isdir( os.path.abspath( uri ) ):
             self.type = Repository.LOCAL_REPOSITORY
             self.path = os.path.abspath( uri )
             self.__scan_local_packages()
@@ -347,15 +347,22 @@ class Repository():
             print repr( possibilities )
 
     def __getitem__(self, package_name):
-        assert self.packages is not None and len(self.packages) > 0, "Attempted to get a package from a repository that has no packages"
+        assert self.packages is not None and len(self.packages) > 0, "The repository %s has no packages, and attempted to get a package from it" % self
         for pkg in self.packages:
             if pkg.name == package_name:
                 return pkg
         return None
 
+    def __str__(self):
+        print "self.type = " + self.type
+        if self.type == Repository.LOCAL_REPOSITORY:
+            return "\"file://" + os.abspath( self.path ) + "\""
+        elif self.type == Repository.REMOTE_REPOSITORY:
+            return "%s %s %s" % (self.url, self.dist, self.component)
+        
 
 
-def dl_depenencies(packages, local_repos, remote_repos):
+def dl_depenencies(packages, local_repos, remote_repos, directory):
     debs_to_download = set()
     unmet_dependencies = set()
 
@@ -455,7 +462,7 @@ def dl_depenencies(packages, local_repos, remote_repos):
 
     # now download our debs
     for deb in debs_to_download:
-        deb.save()
+        deb.save(directory)
 
     if len(unmet_dependencies) > 0:
         print "Warning: the following dependencies could not be met:"

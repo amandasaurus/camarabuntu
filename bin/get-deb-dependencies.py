@@ -15,10 +15,13 @@ parser.add_option( "-l", "--local-repo", "--local-repository",
 parser.add_option( "-r", "--remote-repo", "--remote-repository", "--remote-repo", "--remote-repository",
                    dest="remote_repos", action="append", help="URL of web repository", default=[] )
 
+parser.add_option( "-d", "--directory",
+                   dest="directory", help="The directory to store the downloaded deb files. If not specified, the debs are downloaded into the current directory", default=None)
+
 
 (options, debs) = parser.parse_args()
 
-assert len(options.local_repos) > 0, "No local repositorys provided"
+assert len(options.local_repos) > 0, "No local repositories provided"
 
 local_repos = [Repository(r) for r in options.local_repos]
 
@@ -26,7 +29,16 @@ print "Downloading remote repositories... "
 remote_repos = [Repository(r) for r in options.remote_repos]
 print "done"
 
-apt.dl_depenencies( debs, local_repos, remote_repos )
+if options.directory is None:
+    directory = os.getcwd()
+else:
+    if not os.path.isdir( options.directory ):
+        print "Error: '%s' is not a directory." % options.directory
+        os.exit(1)
+    else:
+        directory = options.directory
+
+apt.dl_depenencies( debs, local_repos, remote_repos, directory )
 
 #package.unfulfilled_depenencies(repos, remote_repos)
 
