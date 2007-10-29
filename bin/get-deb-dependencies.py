@@ -26,7 +26,16 @@ print "Downloading remote repositories... "
 remote_repos = [Repository(r) for r in options.remote_repos]
 print "done"
 
-apt.dl_depenencies( debs, local_repos, remote_repos )
+if options.directory is None:
+    directory = os.getcwd()
+else:
+    if not os.path.isdir( options.directory ):
+        print "Error: '%s' is not a directory." % options.directory
+        os.exit(1)
+    else:
+        directory = options.directory
+
+apt.dl_depenencies( debs, local_repos, remote_repos, directory )
 
 #package.unfulfilled_depenencies(repos, remote_repos)
 

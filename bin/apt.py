@@ -362,7 +362,7 @@ class Repository():
         
 
 
-def dl_depenencies(packages, local_repos, remote_repos):
+def dl_depenencies(packages, local_repos, remote_repos, directory):
     debs_to_download = set()
     unmet_dependencies = set()
 
@@ -462,7 +462,7 @@ def dl_depenencies(packages, local_repos, remote_repos):
 
     # now download our debs
     for deb in debs_to_download:
-        deb.save()
+        deb.save(directory)
 
     if len(unmet_dependencies) > 0:
         print "Warning: the following dependencies could not be met:"
