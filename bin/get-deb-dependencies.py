@@ -15,10 +15,13 @@ parser.add_option( "-l", "--local-repo", "--local-repository",
 parser.add_option( "-r", "--remote-repo", "--remote-repository", "--remote-repo", "--remote-repository",
                    dest="remote_repos", action="append", help="URL of web repository", default=[] )
 
+parser.add_option( "-d", "--directory",
+                   dest="directory", help="The directory to store the downloaded deb files. If not specified, the debs are downloaded into the current directory", default=None)
+
 
 (options, debs) = parser.parse_args()
 
-assert len(options.local_repos) > 0, "No local repositorys provided"
+assert len(options.local_repos) > 0, "No local repositories provided"
 
 local_repos = [Repository(r) for r in options.local_repos]
 
