@@ -69,5 +69,5 @@ if [ $stage -le 5 ] ; then
     [ -e /dev/kqemu ] || sudo mknod /dev/kqemu c 250 0
     sudo chmod 666 /dev/kqemu
 
-    qemu -cdrom $OUTPUT_ISO -hda $QEMU_HDA -boot d
+    qemu -monitor stdio -cdrom $OUTPUT_ISO -hda $QEMU_HDA -boot d
 fi
