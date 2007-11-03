@@ -6,7 +6,7 @@ Build-Depends: debhelper
 Standards-Version: 3.7.2.2
 
 Package: camara-classroom-aids
-Architecture: any
+Architecture: all
 Essential: no
 Depends: adduser, coreutils
 Recommends: mozilla | netscape  
