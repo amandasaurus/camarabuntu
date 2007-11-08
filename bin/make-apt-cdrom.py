@@ -54,5 +54,17 @@ if status != 0:
     print output
 assert status == 0
 
+# release file:
+release_file, release_filename = tempfile.mkstemp( prefix="release-", dir=os.getcwd() )
+open( release_filename, "w" ).write("""APT::FTPArchive::Release {
+Origin "APT-Move";
+Label "APT-Move";
+Suite "dapper";
+Codename "dapper";
+Architectures "i386";
+Components "main";
+Description "%s";
+};""" % options.name )
+
 # details:
 # https://help.ubuntu.com/community/AptMoveHowto
