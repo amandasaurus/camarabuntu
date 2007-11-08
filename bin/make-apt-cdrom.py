@@ -18,6 +18,10 @@ parser.add_option( "-d", "--deb-dir",
                    dest="debdir", default=None,
                    help="The directory that has all the debs" )
 
+parser.add_option( "-k", "--gpg-key",
+                    dest="gpgkey", default=None, type="string",
+                    help="The GPG key used to sign the packages" )
+
 
 (options, unneeded) = parser.parse_args()
 
@@ -46,13 +50,13 @@ GPGKEY=
 status, output = commands.getstatusoutput("apt-move -c \"%s\" update" % apt_config_filename)
 if status != 0:
     print output
-assert status == 0
+#assert status == 0
 
 # remake the packages file
 status, output = commands.getstatusoutput( "apt-ftparchive packages \"%(aptdir)s/pool/main/\" | gzip -9c > \"%(aptdir)s/dists/dapper/main/binary-i386/Packages.gz\"" % {'aptdir':apt_cdrom_dir} )
 if status != 0:
     print output
-assert status == 0
+#assert status == 0
 
 # release file:
 release_file, release_filename = tempfile.mkstemp( prefix="release-", dir=os.getcwd() )
@@ -65,6 +69,13 @@ Architectures "i386";
 Components "main";
 Description "%s";
 };""" % options.name )
+
+os.remove( os.path.join( apt_cdrom_dir, "dist/dapper/Release" ) )
+status, output = commands.getstatusoutput( "apt-ftparchive -c ~/myapt.conf release dists/dapper/ > Release" )
+
+status,output = commands.getstatusoutput( "gpg -ba  --default-key=%(gpg_key)s -o \"%(aptdir)s/dists/dapper/Release.gpg\" \"%(aptdir)s/dists/dapper/Release\"" % {'gpg_key':options.gpgkey, 'aptdir':apt_cdrom_dir } )
+if status != 0:
+    print output
 
 # details:
 # https://help.ubuntu.com/community/AptMoveHowto
