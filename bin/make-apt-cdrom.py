@@ -17,3 +17,5 @@ parser.add_option( "-n", "--cd-name",
 
 (options, debs) = parser.parse_args()
 
+# details:
+# https://help.ubuntu.com/community/AptMoveHowto
