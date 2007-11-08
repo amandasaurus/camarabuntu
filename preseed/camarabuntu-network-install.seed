@@ -8,7 +8,7 @@
 # Install source
 d-i     mirror/country    string enter information manually
 d-i     mirror/http/hostname    string 192.168.2.1
-d-i     mirror/http/directory   string /edubuntu
+d-i     mirror/http/directory   string /camarabuntu/6.06/
 d-i     mirror/suite            string dapper
 d-i     mirror/http/proxy       string
 

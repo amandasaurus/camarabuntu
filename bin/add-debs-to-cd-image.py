@@ -52,6 +52,17 @@ dist_name_to_version = { 'warty':'4.10', 'hoary':'5.04', 'breezy':'5.10',
 
 assert dist in dist_name_to_version.keys()
 
+def RunCommand(cmd, msg=None):
+    print "running : %s" % cmd
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    returncode = p.wait()
+    print "output : ", p.stdout.read()
+    print "stderr: ", p.stderr.read()
+    if returncode != 0:
+      print "FAILED!"
+      if msg is not None: print msg
+      sys.exit(returncode)
+      
 def makedir_if_not_exist( *path_parts ):
     path = os.path.join( *path_parts )
     if not os.path.exists( path ):
@@ -87,12 +98,10 @@ os.chdir( temp_dir )
 if options.keyring is None:
     # download a new one
     print "Downloading the ubuntu-keyring..."
-    status, output = commands.getstatusoutput( "apt-get source ubuntu-keyring" )
-    if status != 0:
-        print "An error occured when downloading the source of the ubuntu-keyring package"
-        print "This is needed to sign our new packages"
-        print "The output was:"
-        print output
+    cmd =  "apt-get source ubuntu-keyring" 
+    msg = """An error occured when downloading the source of the ubuntu-keyring package
+    This is needed to sign our new packages"""
+    RunCommand(cmd, msg=msg)
 else:
     if options.keyring[-1] == '/':
         # This should be a directory, if there's a / at the end, it'll break os.path.split
@@ -108,37 +117,21 @@ assert os.path.isfile( gpg_keys_filename )
 print "Adding GPG key %s to the ubuntu-keyring" % options.gpgkey
 
 cmd = "gpg --import < %s" % gpg_keys_filename
-p = subprocess.Popen(cmd, shell=True)
-stdout, stderr = p.communicate(input=options.passphrase)
 # if this fails someone was messing with the code before
-if p.returncode != 0:
-  print stdout
-  print stderr
-  sys.exit(p.returncod)
+RunCommand(cmd)
 
 cmd = "gpg --export FBB75451 437D05B5 %s > %s" % (options.gpgkey, gpg_keys_filename)
-p = subprocess.Popen(cmd, shell=True)
-stdout, stderr = p.communicate(input=options.passphrase)
 # Invalid keys are not detected here, unfortunatly
-if p.returncode != 0:
-  print stdout
-  print stderr
-  sys.exit(p.returncod)
+RunCommand(cmd)
 
 print "\n\nRebuilding the ubuntu-keyring."
 os.chdir( ubuntu_keyring_dir )
-cmd = "dpkg-buildpackage -rfakeroot -k%s" % options.gpgkey
-p = subprocess.Popen(cmd, shell=True)
-stdout, stderr = p.communicate(input=options.passphrase)
 # Invalid keys are not detected here, unfortunatly
-if p.returncode != 0:
-    print "Unable to rebuild the ubuntu-keyring"
-    print "Possible causes:"
-    print " (*) The GPG key you gave (%s) is invalid, check available keys with \"gpg --list-keys\"" % options.gpgkey
-    print "The output was:"
-    print stdout
-    print stderr
-    sys.exit(1)
+cmd = "dpkg-buildpackage -rfakeroot -k%s" % options.gpgkey
+msg = """Unable to rebuild the ubuntu-keyring
+    Possible causes:
+    (*) The GPG key you gave (%s) is invalid, check available keys with "gpg --list-keys" """ % options.gpgkey
+RunCommand(cmd, msg=msg)
 print "Finished Rebuilding the ubuntu-keyring.\n\n"
 
 # Copy these files into the main component
@@ -316,13 +309,7 @@ assert status == 0
 
 cmd = "gpg --default-key \"%(gpgkey)s\" --output %(cddir)s/dists/%(dist)s/Release.gpg -ba %(cddir)s/dists/%(dist)s/Release" % {'cddir':cddir, 'dist':dist, 'gpgkey':options.gpgkey}
 print cmd
-p = subprocess.Popen(cmd, shell=True)
-stdout, stderr = p.communicate(input=options.passphrase)
-# Invalid keys are not detected here, unfortunatly
-if p.returncode != 0:
-  print stdout
-  print stderr
-  sys.exit(p.returncod)
+RunCommand(cmd)
 
 # Clean up
 os.chdir( old_cwd )
@@ -369,3 +356,4 @@ for preseed_file in camarabuntu_preseeds:
     fd.write( "".join( newlines ) )
     fd.close()
     
+

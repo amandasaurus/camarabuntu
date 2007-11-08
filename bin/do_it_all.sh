@@ -3,10 +3,15 @@
 set -e
 
 stage=0
+UPDATE_INSTALLER=
 
 function usage {
 cat <<FOO
-$0 [-s <stage num> ]
+$0 [ <options> ]
+
+-i | update-installer - rsync the files to the network installer
+-q | --qemu - run qemu 
+-v | --vmware - run vmware
 
 default is to run all stages.
 
@@ -29,6 +34,12 @@ while [ "$1" != "" ]; do
                                 ;;
         -s | --)                shift
                                 stage=$1
+                                ;;
+        -i | --update-installer )    UPDATE_INSTALLER=TRUE
+                                ;;
+        -q | --qemu )           QEMU=TRUE
+                                ;;
+        -v | --vmware )         VMWARE=TRUE
                                 ;;
         * )                     usage
                                 exit 1
@@ -61,10 +72,15 @@ if [ $stage -le 3 ] ; then
 fi
 
 if [ $stage -le 4 ] ; then
+    if [ -n "$UPDATE_INSTALLER" ] ; then
+        echo "updating installer"
+        rsync -av $EXTRACTED_CD_DIR/ installer:/var/www/camarabuntu/6.06/
+    fi
+    echo "creating iso"
     $base_dir/make-cd-iso.py --iso-file=$OUTPUT_ISO --dir=$EXTRACTED_CD_DIR --name=Camarabuntu
 fi
 
-if [ $stage -le 5 ] ; then
+if [ $stage -le 5 -a -n "$QEMU" ] ; then
     sudo modprobe kqemu
     [ -e /dev/kqemu ] || sudo mknod /dev/kqemu c 250 0
     sudo chmod 666 /dev/kqemu
