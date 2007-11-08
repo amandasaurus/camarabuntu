@@ -48,5 +48,11 @@ if status != 0:
     print output
 assert status == 0
 
+# remake the packages file
+status, output = commands.getstatusoutput( "apt-ftparchive packages \"%(aptdir)s/pool/main/\" | gzip -9c > \"%(aptdir)s/dists/dapper/main/binary-i386/Packages.gz\"" % {'aptdir':apt_cdrom_dir} )
+if status != 0:
+    print output
+assert status == 0
+
 # details:
 # https://help.ubuntu.com/community/AptMoveHowto
