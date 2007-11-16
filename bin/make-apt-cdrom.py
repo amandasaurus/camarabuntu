@@ -24,7 +24,6 @@ parser.add_option( "-k", "--gpg-key",
                     dest="gpgkey", default=None, type="string",
                     help="The GPG key used to sign the packages" )
 
-
 (options, unneeded) = parser.parse_args()
 
 assert options.isofilename is not None, "You must specify the filename for the resultant ISO file with --iso-file/-i"
