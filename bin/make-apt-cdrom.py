@@ -51,8 +51,6 @@ for package, filename in [(Package(filename=filename), filename) for filename in
         os.makedirs( dir_name )
     shutil.copy( filename, dir_name )
     
-sys.exit()
-
 
 # remake the packages file
 # TODO remove 'dapper' hardcoding
