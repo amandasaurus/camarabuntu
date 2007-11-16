@@ -82,6 +82,11 @@ if status != 0:
 os.mkdir( os.path.join( apt_cdrom_dir, ".disk" ) )
 open( os.path.join( apt_cdrom_dir, '.disk', 'info' ), 'w' ).write( options.name )
 
+# Add the signature to the disk
+status, output = commands.getstatusoutput( "gpg --export -a \"%s\" > \"%s\"" % (options.gpgkey, os.path.join( apt_cdrom_dir, "signature.key" ) ) )
+if status != 0:
+    print output
+assert status == 0
 
 # details:
 # https://help.ubuntu.com/community/AptMoveHowto
