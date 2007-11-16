@@ -60,9 +60,9 @@ if status != 0:
 #assert status == 0
 
 # release file:
-release_file, release_filename = tempfile.mkstemp( prefix="make-apt-cdrom-release-", dir=os.getcwd() )
+config_file, config_filename = tempfile.mkstemp( prefix="make-apt-cdrom-release-conf-", dir=os.getcwd() )
 # TODO remove tha 'apt-move' stuff. What else should it be called
-open( release_filename, "w" ).write("""APT::FTPArchive::Release {
+open( config_filename, "w" ).write("""APT::FTPArchive::Release {
 Origin "APT-Move";
 Label "APT-Move";
 Suite "dapper";
@@ -72,7 +72,13 @@ Components "main";
 Description "%s";
 };""" % options.name )
 
-status, output = commands.getstatusoutput( "apt-ftparchive -c \"%s\" release dists/dapper/ > \"%s\"" % (release_filename, os.path.join( apt_cdrom_dir, 'dists', 'dapper', 'Release') ) )
+status, output = commands.getstatusoutput( "apt-ftparchive -c \"%(config_filename)s\" release %(aptdir)s/dists/dapper/" % {'config_filename':config_filename, 'aptdir':apt_cdrom_dir } )
+
+if status != 0:
+    print output
+assert status == 0
+
+open( os.path.join( apt_cdrom_dir, 'dists', 'dapper', 'Release'), 'w').write( output )
 
 status,output = commands.getstatusoutput( "gpg -ba  --default-key=%(gpg_key)s -o \"%(aptdir)s/dists/dapper/Release.gpg\" \"%(aptdir)s/dists/dapper/Release\"" % {'gpg_key':options.gpgkey, 'aptdir':apt_cdrom_dir } )
 if status != 0:
