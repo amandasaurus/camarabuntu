@@ -33,10 +33,10 @@ assert options.gpgkey is not None, "You must provide the GPG key to sign the pac
 debdir = os.path.abspath( options.debdir )
 
 # this is the CD we work in and will have be the cd image layout
-apt_cdrom_dir = tempfile.mkdtemp( prefix="apt-cdrom-", dir=os.getcwd() )
+apt_cdrom_dir = tempfile.mkdtemp( prefix="make-apt-cdrom-cdrom-", dir=os.getcwd() )
 
 # this is our apt-move config file
-apt_config, apt_config_filename = tempfile.mkstemp( prefix="apt-move.conf-", dir=os.getcwd() )
+apt_config, apt_config_filename = tempfile.mkstemp( prefix="make-apt-cdrom-apt-move.conf-", dir=os.getcwd() )
 # TODO dist
 open( apt_config_filename, "w" ).write("""APTSITES="/all/"
 LOCALDIR=%(apt_cdrom_dir)s
@@ -52,9 +52,19 @@ CONTENTS=no
 GPGKEY=
 """ % {'debdir':debdir, 'apt_cdrom_dir':apt_cdrom_dir} )
 
-status, output = commands.getstatusoutput("apt-move -c \"%s\" update" % apt_config_filename)
-if status != 0:
-    print output
+cmd = "apt-move -c \"%s\" update" % apt_config_filename
+p = subprocess.Popen(cmd, shell=True)
+stdout, stderr = p.communicate()
+# if this fails someone was messing with the code before
+if p.returncode != 0:
+  print "Stdout:"
+  print stdout
+  print "Stderr:"
+  print stderr
+  sys.exit(p.returncode)
+#status, output = commands.getstatusoutput("apt-move -c \"%s\" update" % apt_config_filename)
+#if status != 0:
+#    print output
 #assert status == 0
 
 # remake the packages file
@@ -75,8 +85,8 @@ Components "main";
 Description "%s";
 };""" % options.name )
 
-os.remove( os.path.join( apt_cdrom_dir, "dist/dapper/Release" ) )
-status, output = commands.getstatusoutput( "apt-ftparchive -c ~/myapt.conf release dists/dapper/ > Release" )
+#os.remove( os.path.join( apt_cdrom_dir, "dist/dapper/Release" ) )
+status, output = commands.getstatusoutput( "apt-ftparchive -c ~/myapt.conf release dists/dapper/ > Release-extra" )
 
 status,output = commands.getstatusoutput( "gpg -ba  --default-key=%(gpg_key)s -o \"%(aptdir)s/dists/dapper/Release.gpg\" \"%(aptdir)s/dists/dapper/Release\"" % {'gpg_key':options.gpgkey, 'aptdir':apt_cdrom_dir } )
 if status != 0:
