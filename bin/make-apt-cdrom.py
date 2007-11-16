@@ -37,6 +37,7 @@ debdir = os.path.abspath( options.debdir )
 # this is the CD we work in and will have be the cd image layout
 apt_cdrom_dir = tempfile.mkdtemp( prefix="make-apt-cdrom-cdrom-", dir=os.getcwd() )
 
+# TODO remove 'dapper' hardcoding'
 for dir in ["pool", "pool/main", "dists", "dists/dapper", "dists/dapper/main", "dists/dapper/main/binary-i386"]:
     os.mkdir( os.path.join( apt_cdrom_dir, dir ) )
 
@@ -55,6 +56,7 @@ sys.exit()
 
 
 # remake the packages file
+# TODO remove 'dapper' hardcoding
 status, output = commands.getstatusoutput( "apt-ftparchive packages \"%(aptdir)s/pool/main/\" | gzip -9c > \"%(aptdir)s/dists/dapper/main/binary-i386/Packages.gz\"" % {'aptdir':apt_cdrom_dir} )
 if status != 0:
     print output
