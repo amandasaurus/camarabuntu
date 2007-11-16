@@ -72,8 +72,7 @@ Components "main";
 Description "%s";
 };""" % options.name )
 
-#os.remove( os.path.join( apt_cdrom_dir, "dist/dapper/Release" ) )
-status, output = commands.getstatusoutput( "apt-ftparchive -c ~/myapt.conf release dists/dapper/ > Release-extra" )
+status, output = commands.getstatusoutput( "apt-ftparchive -c \"%s\" release dists/dapper/ > \"%s\"" % (release_filename, os.path.join( apt_cdrom_dir, 'dists', 'dapper', 'Release') ) )
 
 status,output = commands.getstatusoutput( "gpg -ba  --default-key=%(gpg_key)s -o \"%(aptdir)s/dists/dapper/Release.gpg\" \"%(aptdir)s/dists/dapper/Release\"" % {'gpg_key':options.gpgkey, 'aptdir':apt_cdrom_dir } )
 if status != 0:
