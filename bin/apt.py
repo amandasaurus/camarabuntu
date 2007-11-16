@@ -65,6 +65,9 @@ class Package():
                 self.parse_dependencies( value )
             if key == "Version":
                 self.version_string = value
+            if key == "Package":
+                self.name = value
+
 
 
     def __str__(self):
