@@ -61,6 +61,7 @@ if status != 0:
 
 # release file:
 release_file, release_filename = tempfile.mkstemp( prefix="release-", dir=os.getcwd() )
+# TODO remove tha 'apt-move' stuff. What else should it be called
 open( release_filename, "w" ).write("""APT::FTPArchive::Release {
 Origin "APT-Move";
 Label "APT-Move";
