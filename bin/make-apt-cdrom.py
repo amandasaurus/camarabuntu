@@ -3,6 +3,8 @@
 from optparse import OptionParser
 import os, shutil, tempfile, commands, glob, sys, re, subprocess, shutil, time
 
+from apt import Package
+
 parser = OptionParser()
 
 
@@ -35,37 +37,22 @@ debdir = os.path.abspath( options.debdir )
 # this is the CD we work in and will have be the cd image layout
 apt_cdrom_dir = tempfile.mkdtemp( prefix="make-apt-cdrom-cdrom-", dir=os.getcwd() )
 
-# this is our apt-move config file
-apt_config, apt_config_filename = tempfile.mkstemp( prefix="make-apt-cdrom-apt-move.conf-", dir=os.getcwd() )
-# TODO dist
-open( apt_config_filename, "w" ).write("""APTSITES="/all/"
-LOCALDIR=%(apt_cdrom_dir)s
-DIST=dapper
-PKGTYPE=binary
-FILECACHE=%(debdir)s
-LISTSTATE=/var/lib/apt/lists
-DELETE=no
-MAXDELETE=20
-COPYONLY=yes
-PKGCOMP=gzip
-CONTENTS=no
-GPGKEY=
-""" % {'debdir':debdir, 'apt_cdrom_dir':apt_cdrom_dir} )
+for dir in ["pool", "pool/main", "dists", "dists/dapper", "dists/dapper/main", "dists/dapper/main/binary-i386"]:
+    os.mkdir( os.path.join( apt_cdrom_dir, dir ) )
 
-cmd = "apt-move -c \"%s\" update" % apt_config_filename
-p = subprocess.Popen(cmd, shell=True)
-stdout, stderr = p.communicate()
-# if this fails someone was messing with the code before
-if p.returncode != 0:
-  print "Stdout:"
-  print stdout
-  print "Stderr:"
-  print stderr
-  sys.exit(p.returncode)
-#status, output = commands.getstatusoutput("apt-move -c \"%s\" update" % apt_config_filename)
-#if status != 0:
-#    print output
-#assert status == 0
+for package, filename in [(Package(filename=filename), filename) for filename in glob.glob( os.path.join( debdir, "*.deb" ) )]:
+    print "Found deb %s" % package
+    if package.name[0:3] == 'lib':
+        dir_name = package.name[0:4]
+    else:
+        dir_name = package.name[0]
+    dir_name = os.path.join( apt_cdrom_dir, "pool", "main", dir_name, package.name )
+    if not os.path.isdir( dir_name ):
+        os.makedirs( dir_name )
+    shutil.copy( filename, dir_name )
+    
+sys.exit()
+
 
 # remake the packages file
 status, output = commands.getstatusoutput( "apt-ftparchive packages \"%(aptdir)s/pool/main/\" | gzip -9c > \"%(aptdir)s/dists/dapper/main/binary-i386/Packages.gz\"" % {'aptdir':apt_cdrom_dir} )
