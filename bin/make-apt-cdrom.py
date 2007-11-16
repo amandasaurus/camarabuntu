@@ -78,5 +78,10 @@ status,output = commands.getstatusoutput( "gpg -ba  --default-key=%(gpg_key)s -o
 if status != 0:
     print output
 
+# Add the .disk directory to tell ubuntu about this
+os.mkdir( os.path.join( apt_cdrom_dir, ".disk" ) )
+open( os.path.join( apt_cdrom_dir, '.disk', 'info' ), 'w' ).write( options.name )
+
+
 # details:
 # https://help.ubuntu.com/community/AptMoveHowto
