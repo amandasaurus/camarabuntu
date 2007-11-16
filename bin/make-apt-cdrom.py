@@ -25,6 +25,11 @@ parser.add_option( "-k", "--gpg-key",
 
 (options, unneeded) = parser.parse_args()
 
+assert options.isofilename is not None, "You must specify the filename for the resultant ISO file with --iso-file/-i"
+assert options.name is not None, "You must provide a name for the CD with --name/-n"
+assert options.debdir is not None, "You must provide a directory that contains all the debs using --deb-dir/-d"
+assert options.gpgkey is not None, "You must provide the GPG key to sign the packages using --gpg-key/-g"
+
 debdir = os.path.abspath( options.debdir )
 
 # this is the CD we work in and will have be the cd image layout
