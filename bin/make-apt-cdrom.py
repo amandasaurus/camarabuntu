@@ -94,5 +94,10 @@ if status != 0:
     print output
 assert status == 0
 
-# details:
-# https://help.ubuntu.com/community/AptMoveHowto
+# make the cd iso
+status, output = commands.getstatusoutput( "mkisofs -r -A \"%(cd_name)s\" -o \"%(iso_filename)s\" \"%(aptdir)s\" " % {'cd_name':options.name, 'iso_filename':options.isofilename, 'aptdir':apt_cdrom_dir } )
+if status != 0:
+    print output
+assert status == 0
+
+print "Created the ISO"
