@@ -1,10 +1,7 @@
 # Set the installer language to Hiberno-English and UK keybaord layout
 # Note: This are set before the cd is loaded, so they must be specified in the
 # kernel options as so:
-# locale=en_IE console-setup/layoutcode=uk
-# These lines are incl
-#d-i debian-installer/locale string ie_IE
-#d-i console-setup/layoutcode string uk
+# locale=en_IE preseed/locale=en_IE kbd-chooser/method=uk console-setup/layoutcode=en_IE
 
 ## Network
 d-i netcfg/choose_interface select auto
