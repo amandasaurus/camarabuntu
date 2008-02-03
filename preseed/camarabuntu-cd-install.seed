@@ -40,7 +40,7 @@ d-i time/zone string Europe/Dublin
 ## user set up
 d-i passwd/root-login boolean true
 # MD5 sum of the user's password
-d-i passwd/root-password-crypted password $1$5Vmavx2s$bzv0NHraiyhkD9guVZS2g.
+d-i passwd/root-password-crypted password $1$COqVFJXa$NAXxvse1luhPtilzfcrXK/
 
 # When we set the root password, the first user doesn't have sudo
 # Source: https://bugs.launchpad.net/ubuntu/+source/user-setup/+bug/16139
