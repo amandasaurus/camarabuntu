@@ -19,13 +19,15 @@ d-i netcfg/get_hostname  string camarabuntu
 ## Partitioning
 # Put everything in one partition
 d-i partman-auto/disk string /dev/hda
-
-d-i partman-auto/choose_recipe \
-     select All files in one partition (recommended for new users)
-
+d-i partman-auto/method string regular
+partman-auto    partman-auto/init_automatically_partition \
+    select  Guided - use entire disk
+partman-auto    partman-auto/automatically_partition    select
+d-i partman-auto/purge_lvm_from_device boolean true
 d-i partman/confirm_write_new_label boolean true
-d-i partman/choose_partition \
-     select Finish partitioning and write changes to disk
+d-i  partman/choose_partition \
+    select Finish partitioning and write changes to disk
+
 d-i partman/confirm boolean true
 
 # Sync clock to UTC
