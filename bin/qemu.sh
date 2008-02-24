@@ -1,3 +1,5 @@
 #! /bin/bash
+CAMARABUNTU_DIR=${CAMARABUNTU_DIR:-${HOME}/camara/camarabuntu}
+CAMARABUNTU_ISO=${1:-camarabuntu.iso}
 
-ssh -X nayru sudo qemu -cdrom /home/rory/camara/camarabuntu/$1 -hda /home/rory/camara/camarabuntu/hda.img -boot d
+qemu -cdrom ${CAMARABUNTU_DIR}/${CAMARABUNTU_ISO} -hda ${CAMARABUNTU_DIR}/hda.qcow -boot d -monitor stdio
