@@ -48,7 +48,7 @@ dist = dists_dir[0]
 
 dist_name_to_version = { 'warty':'4.10', 'hoary':'5.04', 'breezy':'5.10',
                          'dapper':'6.06', 'edgy':'6.10', 'feisty':'7.04',
-                         'gusty':'7.10', 'hardy':'8.04' }
+                         'gutsy':'7.10', 'hardy':'8.04' }
 
 assert dist in dist_name_to_version.keys()
 

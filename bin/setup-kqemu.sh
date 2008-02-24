@@ -10,6 +10,10 @@ if [ $? -eq 1 ] ; then
     sudo module-assistant install kqemu
 fi
 
-sudo mknod /dev/kqemu c 250 0
-sudo chmod 666 /dev/kqemu
+if [ ! -c /dev/kqemu ] ; then
+    sudo mknod /dev/kqemu c 250 0
+fi
+if [ \( ! -w /dev/kqemu \) -a \( ! -r /dev/kqemu \) ] ; then
+    sudo chmod 666 /dev/kqemu
+fi
 
