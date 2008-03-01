@@ -1,0 +1,25 @@
+This archive contains the files necessary to run a pxelinux / tftp boot server
+for the provision of linux installers.  This was created for the purposes of
+the camara project (http://www.camara.ie). 
+The server will serve any number of linux distribution installers as well as
+Darik's Boot and Nuke disk wiping facility and Chris Brady's memtest86 memory
+test facility.
+
+All files here are released under the GNU GENERAL PUBLIC LICENSE (see the file
+COPYING for details).
+
+Author:	Conor Daly <conor.daly@cod.homelinux.org>
+Date:	01-May-2007
+
+To use, install the packages mentioned in rpm_packages, configure dhcp and
+apache (httpd) appropriately (sample dhcpd.conf included).  A DocumentRoot of
+/var/www/html is assumed.  Change the location of the apt/<distro> directories
+as required.  Install the supplied tftp config file in  /etc/xinetd.d/ and
+ensure your /etc/services contains tftp entries. 
+
+Boot the client PC using its network boot facility (or use a rom-o-matic boot
+ROM image if the PC cannot network boot (etc/camara/rom-o-matic)). 
+
+Choose Darik's Boot and Nuke (dban) to wipe disks.
+Choose memtest86 to test memory
+Choose a linux distro to install linux.
