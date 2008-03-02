@@ -1,0 +1,12 @@
+Package: qemu-pxe
+Version: 0.1
+Architecture: all
+Essential: no
+Maintainer: Rory McCann <rory@technomancy.org>
+Installed-Size: 28
+Depends: qemu (>= 0.9)
+Section: misc
+Priority: optional
+Description: Allows qemu to boot from a network using PXE
+ This package includes the PXE roms needed by qemu to boot from a network.
+ They are taken from the rom-o-matic page
