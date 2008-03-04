@@ -1,0 +1,11 @@
+How to network 2 or more qemu instances together
+
+start one instance:
+
+qemu -hda hda1.img -net nic -net socket,listen=:8080
+
+Start another like this:
+
+qemu -hda hda2.img -net nic -net socket,connect=:8080
+
+now eth0 on the first qemu will be connected to eth0 on the second.
