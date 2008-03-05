@@ -1,0 +1,14 @@
+default dban
+prompt 1
+timeout 50
+display pxelinux.cfg/message.txt
+f1 pxelinux.cfg/message.txt
+
+label dban
+	kernel memdisk
+	append initrd=dban.img
+
+label harddisk
+	localboot 0
+
+
