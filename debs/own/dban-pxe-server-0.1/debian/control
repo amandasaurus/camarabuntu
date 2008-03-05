@@ -1,0 +1,12 @@
+Source: dban-pxe-server
+Section: misc
+Priority: optional
+Maintainer: Rory McCann <rory@technomancy.org>
+Standards-Version: 3.7.3
+Build-Depends: debhelper (>= 5)
+
+Package: dban-pxe-server
+Architecture: any
+Depends:
+Description: Runs a DBAN PXE/TFTP server
+ Allows you to wipe the hard disks of computers over the network
