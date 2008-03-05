@@ -1,8 +1,0 @@
-ubuntu-installer/i386/boot-screens/splash.rle
-
-The default installation is suitable for most desktop or laptop systems.
-Press F1control and F then 1 for help and advanced installation options.
-
-To install only the command-line base system, type 'cli' then ENTER.
-For the default installation, press ENTER.
-
