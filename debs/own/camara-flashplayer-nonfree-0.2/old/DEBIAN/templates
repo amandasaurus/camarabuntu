@@ -1,0 +1,73 @@
+Template: flashplugin-nonfree/local
+Type: string
+Default: 
+Description: Location to the local file:
+ Have you already downloaded the .tar.gz
+ package from Adobe? If so, please enter the directory you downloaded
+ it into. Do not include the filename here. If you
+ have not already downloaded it, leave this blank and the package will be
+ downloaded automatically.
+Description-cs.UTF-8: Umístění souboru na místním disku.
+ Již jste stáhli .tar.gz balíček z webu Adobe? Pokud ano, vložte prosím adresáři do kterého jste jej uložili. Neuvádějte na konci jméno souboru. Pokud jste jej ještě nestáhli, nechte toto pole prázdné a balíček bude stažen automaticky.
+Description-de.UTF-8: Ort der lokalen Datei:
+ Haben Sie das ».tar.gz«-Paket bereits von der Adobe-Website heruntergeladen? Falls ja, geben Sie bitte das Verzeichnis an, in dem Sie die Datei gespeichert haben (den Dateinamen bitte nicht miteingeben). Falls Sie die Datei noch nicht heruntergeladen haben, lassen Sie die Zeile bitte leer; das Paket wird dann automatisch heruntergeladen.
+Description-es.UTF-8: Ubicación del archivo local:
+ ¿Ha descargado ya el paquete «.tar.gz» desde Adobe? Si es así, introduzca el directorio en el que lo descargó. No incluya el nombre del archivo aquí. Si aún no lo descargó, déjelo en blanco y se descargará el paquete automáticamente.
+Description-fr.UTF-8: Répertoire du fichier local :
+ Si vous avez déjà téléchargé l'archive .tar.gz depuis le serveur d'Adobe, veuillez indiquer le répertoire où il se trouve, sans le nom du fichier. Si vous n'avez pas encore téléchargé ce fichier, laissez cette entrée vide pour le télécharger automatiquement.
+Description-ja.UTF-8: ローカルファイルの場所:
+ Adobe から .tar.gz パッケージをすでにダウンロードしていますか? もしそうであれば、ダウンロードしたものを置いているディレクトリを入力してください。ファイル名はここでは含めないでください。まだダウンロードしていないのであれば、ここは空のままにしておくことで、パッケージは自動的にダウンロードされます。
+Description-lt.UTF-8: Vietinis rinkmenos kelias:
+ Ar parsisiuntėte tar.gz rinkmeną iš Adobe svetainės? Jei taip, įveskite aplanką, kuriame yra ši rinkmena. Įveskite tik aplanko pavadinimą – čia nereikia rašyti pačios rinkmenos pavadinimo. Jei šios rinkmenos nesate parsisiuntęs, palikite šį lauką tuščią ir ji bus parsiųsta automatiškai.
+Description-pt.UTF-8: Localização do ficheiro local:
+ Já obteve o pacote .tar.gz da Adobe? Se sim, por favor introduza o directório onde ele se encontra. Não inclua aqui o nome do ficheiro. Se ainda não o obteve, deixe este espaço em branco e o pacote será obtido automaticamente.
+Description-sv.UTF-8: Plats för den lokala filen:
+ Har du redan hämtat ner tar.gz-paketet från Adobe? Om du har det, ange katalogen där filen ligger. Inkludera inte filnamnet här. Om du inte har hämtat det, lämna fältet blankt och paketet kommer automatiskt att hämtas.
+
+Template: flashplugin-nonfree/not_exist
+Type: error
+Description: File not found
+ The .tar.gz file does not exist in the directory you entered.
+ Please try again. Enter the path of the directory that the package is in
+ (don't type the filename at the end of the path).
+Description-cs.UTF-8: Soubor nebyl nalezen
+ Soubor .tar.gz v uvedeném adresáři neexistuje. Zkuste to prosím znova. Vložte cestu k adresáři, ve kterém se balíček nachází (neuvádějte na konci cesty jméno souboru).
+Description-de.UTF-8: Datei nicht gefunden
+ Die ».tar.gz«-Datei befindet sich nicht im angegebenen Verzeichnis. Bitte versuchen Sie es erneut. Geben Sie den Pfad zum Verzeichnis an, in dem sich das Paket befindet (den Dateinamen bitte nicht ans Ende des Pfades anfügen).
+Description-es.UTF-8: No se encontró el archivo
+ El archivo «.tar.gz» no está en el directorio introducido. Por favor, inténtelo de nuevo. Introduzca la ruta del directorio donde se encuentra el paquete (no escriba el nombre del archivo al final de la ruta).
+Description-fr.UTF-8: Ficher introuvable
+ L'archive .tar.gz n'existe pas dans le répertoire que vous avez indiqué. Veuillez recommencer et indiquer le répertoire contenant le fichier d'installation (seulement le répertoire, sans le nom du fichier).
+Description-ja.UTF-8: ファイルが見つかりません
+ .tar.gz ファイルが指定のディレクトリに存在しません。再度試してください。パッケージのあるディレクトリのパスを入力してください (パスの最後にはファイル名は入れないでください)。
+Description-lt.UTF-8: Rinkmena nerasta
+ .tar.gz rinkmena nurodytame kataloge nerasta. Bandykite dar kartą. Įveskite katalogą, kuriame yra ši rinkmena (pačios rinkmenos pavadinimo įvedinėti nereikia).
+Description-pt.UTF-8: Ficheiro não encontrado
+ O ficheiro .tar.gz não existe no directório que introduziu. Por favor tente de novo. Introduza o caminho do directório onde está o pacote (não escreva o nome do ficheiro no fim do caminho).
+Description-sv.UTF-8: Filen hittades inte
+ Paketfilen finns inte i katalogen som du angav. Försök igen. Ange sökvägen till den katalog som paketet finns i (skriv inte in filnamnet på slutet av sökvägen).
+
+Template: flashplugin-nonfree/httpget
+Type: boolean
+Default: true
+Description: Do you accept the license and do you want to download the flash plugin now?
+ The Adobe flash plugin is to be downloaded from www.adobe.com.  This
+ can be done automatically now.  The distribution license of the Adobe
+ flash plugin is available at www.adobe.com.
+Description-cs.UTF-8: Souhlasíte s licencí a chcete nyní stáhnout zásuvný modul pro flash?
+ Zásuvný modul pro flash od Adobe bude nyní stažen ze stránek www.adobe.com. Toto může být nyní provedeno automaticky. Distribuční licence zásuvného modulu pro flash od Adobe je dostupná na www.adobe.com.
+Description-de.UTF-8: Akzeptieren Sie die Lizenz und wollen Sie die Flash-Erweiterung jetzt herunterladen?
+ Die Flash-Erweiterung von Adobe kann jetzt automatisch von www.adobe.com heruntergeladen werden. Die Vertriebs-Lizenz der Flash-Erweiterung ist auf www.adobe.com verfügbar.
+Description-es.UTF-8: ¿Acepta la licencia y desea descargar el complemento flash ahora?
+ El complemento flash de Adobe va a descargarse de «www.adobe.com». Esto se puede hacer ahora automáticamente. La licencia de distribución del complemento flash de Adobe está disponible en «www.adobe.com».
+Description-fr.UTF-8: Acceptez-vous la licence et souhaitez-vous télécharger l'extension « flash » ?
+ L'extension « flash » d'Adobe doit être téléchargée depuis le site www.adobe.com. Cette opération peut se faire automatiquement maintenant. La licence de redistribution de l'extension « flash » d'Adobe est consultable sur ce même site.
+Description-ja.UTF-8: ライセンスに同意して flash プラグインを今ダウンロードしますか?
+ Adobe flash プラグインは www.adobe.com からダウンロードされます。これは今自動的に行うことができます。Adobe flash プラグインの配布ライセンスは、www.adobe.com から入手できます。
+Description-lt.UTF-8: Ar sutinkate su licencija ir norite dabar parsisiųsti „Flash“ įskiepį?
+ Adobe „Flash“ įskiepis bus automatiškai parsiųstas iš www.adobe.com. Tai galima dabar atlikti automatiškai. Šio įskiepio licenciją galite rasti svetainėje www.adobe.com.
+Description-pt.UTF-8: Aceita a licença e quer obter o 'plugin' de flash agora?
+ O plugin de flash da Adobe será obtido de www.adobe.com. Isto pode ser feito agora automaticamente. A licença de distribuição do plugin de flash da Adobe está disponível em www.adobe.com.
+Description-sv.UTF-8: Accepterar du licensen och vill hämta flash-insticksmodulen nu?
+ Adobes flash-insticksmodul kommer att hämtas från www.adobe.com.  Detta kan göras automatiskt nu.  Licensen för distribuering för Adobes flash-insticksmodul finns tillgänglig på www.adobe.com.
+
