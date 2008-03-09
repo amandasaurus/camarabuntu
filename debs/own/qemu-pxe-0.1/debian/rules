@@ -1,0 +1,39 @@
+#!/usr/bin/make -f
+
+package = qemu-pxe
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean
+
+install-clean:
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+
+install: build install-clean
+	dh_install
+
+# Build architecture-dependent files here.
+binary-arch:
+# We have nothing to do by default.
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installmenu
+	dh_install
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: clean binary-indep binary-arch binary install build install-clean

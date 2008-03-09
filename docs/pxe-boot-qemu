@@ -1,0 +1,11 @@
+See network-qemu-instances-togeter first for how to connect several instances
+together
+
+Although there's a "-boot n" option in qemu > 0.9 which claims to do this, I've
+never found it to work. It always just booted off the hard drive.
+
+Instead boot off pxe-boot-qemu-cd.iso. eg:
+
+qemu -hda foo.img -cdrom pxe-boot-cd.iso -boot d -net nic -net socket,connect=:8080
+
+Obviously it's pointless to PXE boot if you don't have a network set up first

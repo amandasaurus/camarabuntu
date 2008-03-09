@@ -1,0 +1,14 @@
+Source: qemu-pxe
+Section: misc
+Priority: optional
+Maintainer: Rory McCann <rory@technomancy.org>
+Build-Depends: debhelper
+Standards-Version: 3.7.2.2
+
+Package: qemu-pxe
+Architecture: all
+Essential: no
+Depends: qemu (>= 0.9)
+Description: Allows qemu to boot from a network using PXE
+ This package includes the PXE roms needed by qemu to boot from a network.
+ They are taken from the rom-o-matic page
