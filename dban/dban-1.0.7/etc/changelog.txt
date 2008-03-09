@@ -1,0 +1,238 @@
+dban-1.0.7 stable; urgency=low
+
+  * New feature: ISAAC PRNG. (Closes SF#998169.)
+  * New feature: Estimated finish time. (Closes SF#1240374.)
+  * Linux 2.4.33 upgrade.
+  * WinImage 8.0.8000 upgrade.
+  * Added color and comments to the rc messages.
+  * Added LZMA decompression support to the kernel loader.
+  * Added contributed media labels to the distribution package.
+  * Enabled CONFIG_SCSI_MULTI_LUN. (Closes SF#1163902.)
+  * Enabled CONFIG_I20_BLOCK, generic I20 driver.
+  * Enabled CONFIG_FUSION, LSI MPT driver.
+  * Enabled CONFIG_AMD74XX_OVERRIDE.
+  * Enabled CONFIG_PDC202XX_FORCE.
+  * Disabled CONFIG_CHR_DEV_SG, which was unused.
+  * Disabled F12, which was deprecated.
+  * Removed the "CPU time" field in the statistics window.
+  * Added the "Estimated" field in the statistics window.
+  * Changed instances of off_t to loff_t.
+  * Moved the WinImage SFX module to the top-level distribution archive.
+  * Fixed the string format for logging a block size change.
+  * Fixed the overflow of 64-bit literal constants in the GUI.
+  * Fixed the spelling of "5220.22-M".
+  * Fixed the repeating device name in the log summary. (Closes SF#1511747.)
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Sat, Aug 12 13:01:00 -0500 2006
+
+dban-1.0.6 stable; urgency=low
+ 
+  * Linux 2.4.31 upgrade.
+  * Merged 2.4.31-pre1-libata1 patch.
+  * Wrapped the image file with the WinImage SFX module.
+  * Added a Microsoft URL file that points to the WinImage homepage.
+  * Corrected the spelling of "empty" in the dwipe.txt log.
+  * Fixed the time stamp error in the dwipe.txt log.
+  * Removed "again" from the final result message.
+  * Set the soft block size to match the hard sector size.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Sun, Jul 24 17:23:24 -0400 2005
+
+dban-1.0.5 stable; urgency=low
+
+  * Linux 2.4.30 upgrade.
+  * Syslinux 2.13 upgrade.
+  * Enabled CONFIG_SCSI_SATA_AHCI, Intel Advanced Host Controller driver.
+  * Enabled CONFIG_SCSI_SATA_QSTOR, Pacific Digital QStor driver.
+  * Added troubleshooting syslinux page.
+  * Reversed the printk patch and added silent_kernel to main.c instead.
+  * Changed instances of "quiet" in the syslinux.cfg file to "silent".
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Sat, Apr 16 18:34:21 -0400 2005
+
+dban-1.0.4 stable; urgency=low
+
+  * Linux 2.4.28 upgrade.
+  * Syslinux 2.11 upgrade.
+  * Added SATA drivers.
+  * Enabled CONFIG_SCSI_SATA_SVW, Broadcom/Serverworks/Apple K2 SATA driver.
+  * Enabled CONFIG_SCSI_SATA_PROMISE, Promise TX2 and Promise TX4 driver.
+  * Enabled CONFIG_SCSI_SATA_SX4, Promise SX4 SATA driver.
+  * Enabled CONFIG_SCSI_SATA_SIL, Silicon Image SATA driver.
+  * Enabled CONFIG_SCSI_SATA_SIS, SiS 964/180 SATA driver.
+  * Enabled CONFIG_SCSI_SATA_VIA, VIA SATA driver.
+  * Enabled CONFIG_SCSI_SATA_VITESSE, Vitesse VSC7174 SATA driver.
+  * Disabled the CTRL-ALT-DEL interrupt handler.
+  * Disabled console messages by reducing the printk level.
+  * Changed the handling of a device open failure from an error to a warning,
+    which should improve the behavior of dwipe on computers with Iomega Zip
+    drives and other write-capable ATAPI devices.
+  * Commented the Explorer Zip Folder install issue in the readme file.
+  * Added "succeeded", "failed", and "incomplete" results to the log.
+  * Corrected source file banners.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Thu, Nov 02 20:01:02 -0400 2004
+
+dban-1.0.3 stable; urgency=low
+
+  * Linux 2.4.24 upgrade.
+  * Syslinux 2.08 upgrade.
+  * New method: DoD 5220.22-M short wipe.
+  * Enabled CONFIG_OPTIMISE_SIZE and removed the equivalent DBAN patch.
+  * Moved BLKGETSIZE64 after the definition of u64 in the 'dwipe.h' file.
+  * Disabled the "scanning for seed files" startup message.
+  * Added the 'dodshort', 'dod3pass', 'verbose', and 'zero' labels to the
+    'syslinux.cfg' file.
+  * Changed the description of the OPS-II method from "Low" to "Medium".
+  * Moved the ncurses library argument to the end of the command line
+    to avoid miscompilation with recent gcc releases.
+  * Kludged the bogus detection of empty write-capable ATAPI devices by
+    ignoring impossibly short DevFS names.
+  * Removed the "CPU Load" field in the statistics window.
+  * Removed the "Limiter" field in the statistics window.
+  * Added the "CPU Time" field in the statistics window.
+  * Added the "Load Averages" field in the statistics window.
+  * Changed the start key from F12 to F10. Using F12 is now deprecated.
+  * Removed the "/y" copy switch from the `install.bat` script.
+  * Changed the default method to 'dodshort'.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Tue, Mar 22 2004 17:11:07 -0800 2004
+
+dban-1.0.2 stable; urgency=low
+
+  * Linux 2.4.22 upgrade.
+  * Syslinux 2.06 upgrade.
+  * uClibc 0.9.20 upgrade.
+  * Enabled CONFIG_BLK_DEV_GENERIC.
+  * Enabled CONFIG_BLK_DEV_ADMA100, Pacific Digital ADMA-100 driver.
+  * Enabled CONFIG_BLK_DEV_TRIFLEX, Compaq Triflex IDE driver.
+  * Enabled CONFIG_BLK_DEV_PDC202XX_OLD, Promise PDC202{46|62|65|67} driver.
+  * Enabled CONFIG_BLK_DEV_PDC202XX_NEW, Promise PDC202{68|69|70|71|75|76|77}.
+  * Enabled CONFIG_BLK_DEV_SC1200. National Semiconductor SC1200 driver.
+  * Enabled CONFIG_BLK_DEV_SIIMAGE, Silicon Image chipset driver.
+  * Enabled CONFIG_SCSI_AIC79XX, Adaptec AIC-7900 series driver.
+  * Enabled CONFIG_SCSI_NSP32, Workbit NinjaSCSI driver.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Wed, Sep 24 2003 17:31:03 -0500 2003
+
+dban-1.0.1 stable; urgency=low
+
+  * Check whether lseek and BLKGETSIZE64 agree about the device size.
+  * Recompiled the kernel and system library with BLOCK_SIZE 512 and
+    BLOCK_SIZE_BITS 9 so that the last odd sector is wiped on disks with odd
+    sector counts.  Thanks to Cory Altheide <altheidec@nv.doe.gov> for
+    reporting the problem and verifying the fix.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Mon, July 15 2003 19:04:16 -0500 2003
+
+dban-1.0.0 stable; urgency=low
+
+  * Replaced wipe with dwipe.
+  * Changed the rc script to support dwipe.
+  * New feature: Graphical user interface.
+  * New feature: Device selection.
+  * New feature: Partition support.
+  * New feature: Concurrent device wiping.
+  * New feature: Random Gutmann pass ordering.
+  * New feature: Rounds option.
+  * New feature: Options are exposed in the 'syslinux.cfg' file.
+  * New method: DoD 5220.22-M standard wipe.
+  * New method: RCMP TSSIT OPS-II standard wipe.
+  * New method: PRNG Stream wipe.
+  * New verification modes: Off, Last Pass, and All Passes.
+  * Linux 2.4.20 upgrade.
+  * BusyBox 0.60.5 upgrade.
+  * uClibc 0.9.19 upgrade.
+  * SysLinux 2.04 upgrade.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Mon, May 26 2003 18:24:16 -0500 2003
+
+
+dban-0.4.0 stable; urgency=low
+
+  * New feature: Added a quick disk erase before the secure disk wipe.
+  * New feature: Added prng seed file loading.
+  * New feature: Added log file saving.
+  * Busybox 0.60.4 upgrade.
+  * Enabled CONFIG_PDC202XX_BURST for Promise IDE controllers.
+  * Enabled CONFIG_BLK_DEV_FD, the floppy disk driver.
+  * Enabled CONFIG_MSDOS_FS, the MS-DOS filesystem.
+  * Enabled CONFIG_CRAMFS, the compressed rom filesystem.
+  * Enabled CONFIG_TMPFS, the virtual memory filesystem.
+  * Disabled CONFIG_MINIX_FS, the Minix filesystem.
+  * Disabled CONFIG_IDEDISK_MULTI_MODE.
+  * Renamed kernel.bgz to kernel.bzi in the boot filesystem image.
+  * Made sundry changes to the syslinux configuration file.
+  * Removed the ramdisk_size option from the syslinux configuration file.
+  * Made small cosmetic changes to the rc script.
+  * Changed the rc script so that it checks for a floppy drive only once.
+  * Increased the final warning timeout from 10 seconds to 20 seconds.
+  * Ran unix2dos against all text files in the distribution package.
+  * Changed the dd example in the readme file to use a wildcard.
+  * Unbundled the ISO file from the ZIP file.
+  * Tweaked the installation instructions.
+  * Mentioned FreshMeat subscriptions in the readme file.
+  * Added a Microsoft URL file that points to the project homepage.
+  * Added the project homepage url to the warning.txt and about.txt files.
+  * Added grep to test for sanity errors.
+  * Added the /proc/scsi/scsi sanity check.
+  * Added the end-of-rc sanity check.
+  * Added dmesg, tar, gzip, and cp to create log files.
+  * Added dd to load entropy files from a floppy disk into urandom.
+  * Added a memory test to better set the wipe chunk size.
+  * Changed DBAR to DBAN in the install.bat file.
+  * Changed the short 8.3 tilde name to a wildcard in the install.bat file.
+  * Made cosmetic changes to the install.bat file. 
+  * Changed the root filesystem from minix to cramfs.
+  * Added the "you may remove the boot media now" message to syslinux.
+  * Added the "please wait" message to the kernel loader.
+  * Enabled large file support in both uClibc and Busybox.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Tue, Oct 29 2002 20:51:33 -0500 2002
+
+
+dban-0.3.1 stable; urgency=low
+
+  * Changed the splash screen
+  * Added syslinux F-key information pages.
+  * Added emphasis to the failure and success messages.
+  * Added a beep loop to the failure function.
+  * Moved all version information to a separate file.
+  * Removed a testing barnacle from the root filesystem.
+  * Added the wipe readme file.
+  * Added the notes file.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Thu, Sep 19 2002 22:12:03 -0500 2002
+
+dban-0.3.0 stable; urgency=low
+
+  * linux-2.4.19 update.
+  * Changed root=/dev/rd/0 to root=/dev/ram0.  The new kernel will not boot
+    with root=/dev/rd/0, but the /dev/ram0 name now seems to be hardcoded.
+    This violates the DevFS documentation and is probably a kernel bug.
+  * Used full-length file names in the iso image.
+  * Included component license files.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Fri, Sep 13 2002 21:50:36 -0500
+ 2002
+
+dban-0.2.0 stable; urgency=critical
+
+  * wipe-2.1.0 upgrade.
+  * uclibc-0.9.15 upgrade.
+  * syslinux-1.76 upgrade.
+  * Removed the I2C kernel option.
+  * Added a serial console comment to the syslinux configuration file.
+  * Made cosmetic changes to the syslinux configuration file.
+  * Changed the build script to use mkdosfs instead of mformat.
+  * Copied the ide.c kernel options to the ide.txt file in the boot image.
+  * Made cosmetic changes to the rc script.
+  * Corrected documentation errors.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Thu, Sep 12 2002 15:59:20 -0500 2002
+
+dban-0.1.0 stable; urgency=low
+
+  * First public release.
+
+ -- Darik Horn <dajhorn-dban@vanadac.com>  Wed, 15 May 2002 01:39:43 -0500 2002

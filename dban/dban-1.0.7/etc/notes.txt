@@ -1,0 +1,192 @@
+dban-1.0.7 contains:
+
+  * SysLinux 2.13
+  * Linux 2.4.33
+  * LZMA 4.32
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+  * WinImage 8.0.8000
+
+ dban-1.0.7 was compiled with Debian gcc-3.3 1:3.3.5-13
+
+ This release is compressed with LZMA, which provides much more free space on
+ the floppy disk.  LSI MPT and I2O drivers were added.
+
+ Thanks go to Igor Sobrado for reporting the "5220.22-M" typo.
+ 
+ Thanks go to Dorina Lanza for reporting a block adjustment error.
+
+
+dban-1.0.6 contains:
+
+  * SysLinux 2.13
+  * Linux 2.4.31
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+  * WinImage 7
+
+ dban-1.0.6 was compiled with Debian gcc-3.3 1:3.3.5-12
+
+ Performance on computers with the Intel i915/ICH6 chipset has improved.
+
+ Rawrite has been replaced with the WinImage SFX wrapper.  You can unzip
+ the EXE file on Linux to obtain the IMG file.  Ignore the offset warnings.
+
+ This release fixes the erratum where time stamps in the dwipe.txt log were
+ behind the dban.txt log by one month.  The problem was caused by incorrect
+ use of tm_mon in fsprintf and is unrelated to the hardware clock.  Thanks
+ go to Pirie Hart <pirie@u.washington.edu> for providing an accurate bug
+ report.
+
+ This release handles more disks that have odd sector counts or unusual
+ sector sizes. Thanks go to Thomas Radke <radket@nv.doe.gov> for validating
+ the change.
+
+ Thanks go to Zube for providing more weird hardware samples.
+
+
+dban-1.0.5 contains:
+
+  * SysLinux 2.13
+  * Linux 2.4.30
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.5 was compiled with Debian gcc-3.3 1:3.3.5-8
+
+
+dban-1.0.4 contains:
+
+  * SysLinux 2.11
+  * Linux 2.4.28
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.4 was compiled with Debian gcc-3.3 1:3.3.4-13
+
+
+dban-1.0.3 contains:
+
+  * SysLinux 2.08
+  * Linux 2.4.24, Debian version 1
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.3 was compiled with Debian gcc-3.3 1:3.3.3-0pre3.
+
+ The "scanning for seed files" startup message was disabled because it
+ confused too many users, but the rc script still checks for seed files.
+
+ The description of the OPS-II wipe was changed from "Low" to "Medium",
+ but the implementation is unchanged.
+
+ The DoD short method is comprised of passes 1,2,7 from the DoD standard
+ method.  The DoD standard method in dwipe uses an algorithm that was adapted
+ from the Heidi Eraser product.
+
+ The start key was changed to F10 so that DBAN will run on computers with
+ keyboards that do not have the F11 and F12 keys.  F12 will still start the
+ wipe, but using F12 is now deprecated.
+ 
+
+dban-1.0.2 contains:
+
+  * SysLinux 2.06
+  * Linux 2.4.22, Debian version 1
+  * uClibc 0.9.20
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.0 was compiled with Debian gcc-3.3 1:3.3.1-0pre0.
+
+ GCC 3.2.3 produces a kernel that is too large for a 1.44 megabyte floppy disk,
+ and GCC 2.95.4 cannot compile the new mm/filemap.c without patching. Thus, GCC
+ 3.3.1 is the best compiler for this release.
+
+ The purpose of this release is to add several new drivers to the kernel.  As a
+ consequence, there is only 50 kilobytes free on the floppy disk.  As of this
+ writing, there are no known problems with the dban-1.0.1 release.  If you need
+ extra space on the floppy disk for seed files or log files, then continue to
+ use the dban-1.0.1 release.
+
+
+dban-1.0.1 contains:
+
+  * SysLinux 2.04
+  * Linux 2.4.20, Debian version 6
+  * uClibc 0.9.19
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.0 was compiled with Debian gcc-3.3 3.3-2.
+
+
+dban-1.0.0 contains:
+
+  * SysLinux 2.04
+  * Linux 2.4.20, Debian version 6
+  * uClibc 0.9.19
+  * Busybox 0.60.5
+  * Ncurses 5.3
+
+ dban-1.0.0 was compiled with Debian gcc-3.3 3.3-2.
+
+
+dban-0.4.0 contains:
+
+  * SysLinux 1.76
+  * Linux 2.4.19, Debian version 4
+  * uClibc 0.9.15
+  * Busybox 0.60.4
+  * Wipe 2.1.0
+
+ dban-0.4.0 was compiled with Debian gcc-2.95 1:2.95.4-7.
+
+
+dban-0.3.1 contains:
+
+  * SysLinux 1.76
+  * Linux 2.4.19
+  * uClibc 0.9.15
+  * Busybox 0.60.3
+  * Wipe 2.1.0
+
+ dban-0.3.1 was compiled with Debian gcc-2.95 1:2.95.4-7.
+
+
+dban-0.3.0 contains:
+
+  * SysLinux 1.76
+  * Linux 2.4.19
+  * uClibc 0.9.15
+  * Busybox 0.60.3
+  * Wipe 2.1.0
+
+ dban-0.3.0 was compiled with Debian gcc-2.95 1:2.95.4-7.
+
+
+dban-0.2.0 contains:
+
+  * SysLinux 1.76
+  * Linux 2.4.18
+  * uClibc 0.9.15
+  * Busybox 0.60.3
+  * Wipe 2.1.0
+
+ dban-0.3.0 was compiled with Debian gcc-2.95 1:2.95.4-7.
+
+
+dban-0.1.0 contains:
+
+  * SysLinux 1.72
+  * Linux 2.4.18
+  * uClibc 0.9.11
+  * Busybox 0.60.3
+  * Wipe 2.0.1
+
+ dban-0.1.0 was compiled with gcc-2.95 from a Debian/woody prerelease.

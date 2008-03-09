@@ -1,0 +1,19 @@
+1f17
+ Darik's Boot and Nuke: RAID Devices
+ อออออออออออออออออออออออออออออออออออ
+
+  DBAN is compatible with many hardware RAID implementations, but it is
+  untested and unsupported.
+
+  Disassemble all volumes and export all disks in JBOD mode prior to running
+  DBAN on a computer with a RAID controller. Spare disks and failed disks are
+  not wiped if they are part of a volume.
+
+  Except 3Ware equipment, all current RAID solutions for PATA and SATA disks
+  are faux and are actually implemented by the operating system with drivers.
+  This includes all on-board motherboard controllers. DBAN does not have
+  "fakeraid" drivers and it recognizes IDE-RAID devices as regular IDE
+  controllers.
+
+  Push the 1fF117 key to continue.
+

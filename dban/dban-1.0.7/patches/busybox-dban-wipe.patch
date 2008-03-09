@@ -1,0 +1,116 @@
+diff -ru busybox-0.60.4/Config.h busybox-0.60.4-dban/Config.h
+--- busybox-0.60.4/Config.h	Tue Sep 17 18:04:28 2002
++++ busybox-0.60.4-dban/Config.h	Tue Oct 29 15:04:45 2002
+@@ -140,6 +140,7 @@
+ //#define BB_WGET
+ #define BB_WHICH
+ #define BB_WHOAMI
++#define BB_WIPE
+ #define BB_XARGS
+ #define BB_YES
+ // End of Applications List
+diff -ru busybox-0.60.4/Makefile busybox-0.60.4-dban/Makefile
+--- busybox-0.60.4/Makefile	Wed Sep 18 15:21:06 2002
++++ busybox-0.60.4-dban/Makefile	Tue Oct 29 15:05:32 2002
+@@ -33,7 +33,7 @@
+ CFLAGS_EXTRA =
+  
+ # If you want a static binary, turn this on.
+-DOSTATIC = false
++DOSTATIC = true
+ 
+ # Set the following to `true' to make a debuggable build.
+ # Leave this set to `false' for production use.
+@@ -74,7 +74,7 @@
+ # are dd, gzip, mount, tar, and mkfs_minix.
+ # LFS allows you to use the above programs for files
+ # larger than 2GB!
+-DOLFS = false
++DOLFS = true
+ 
+ # If you have a "pristine" source directory, point BB_SRC_DIR to it.
+ # Experimental and incomplete; tell the mailing list
+@@ -373,7 +373,7 @@
+ 
+ 
+ busybox: $(PWD_LIB) $(LIBBB_LIB) $(OBJECTS) 
+-	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBBB_LIB) $(PWD_LIB) $(LIBRARIES)
++	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) ../../busywipe.o $(LIBBB_LIB) $(PWD_LIB) $(LIBRARIES)
+ 	$(STRIPCMD) $(PROG)
+ 
+ # Without VPATH, rule expands to "/bin/sh busybox.mkll Config.h applets.h"
+diff -ru busybox-0.60.4/applets.h busybox-0.60.4-dban/applets.h
+--- busybox-0.60.4/applets.h	Tue Sep 17 18:04:28 2002
++++ busybox-0.60.4-dban/applets.h	Tue Oct 29 15:04:45 2002
+@@ -470,6 +470,9 @@
+ #ifdef BB_WHOAMI
+ 	APPLET(whoami, whoami_main, _BB_DIR_USR_BIN)
+ #endif
++#ifdef BB_WIPE
++	APPLET(wipe, wipe_main, _BB_DIR_USR_BIN)
++#endif
+ #ifdef BB_XARGS
+ 	APPLET(xargs, xargs_main, _BB_DIR_USR_BIN)
+ #endif
+diff -ru busybox-0.60.4/docs/busybox.pod busybox-0.60.4-dban/docs/busybox.pod
+--- busybox-0.60.4/docs/busybox.pod	Wed Sep 18 16:35:14 2002
++++ busybox-0.60.4-dban/docs/busybox.pod	Tue Oct 29 15:04:45 2002
+@@ -2544,6 +2544,14 @@
+ 
+ -------------------------------
+ 
++=item B<wipe>
++
++wipe [B<-ucwsiIhfFdDnNvVzZrRtTkKaA>] [B<-B>(count)] [B<-S>(size)] [B<-C>(size)] [B<-l>[0-3]] [B<-x>[1-32] B<-X>] [B<-p>(1-32)] [B<-b>(0-255)] [files]
++
++
++
++-------------------------------
++
+ =item B<xargs>
+ 
+ xargs [COMMAND] [ARGS...]
+diff -ru busybox-0.60.4/usage.h busybox-0.60.4-dban/usage.h
+--- busybox-0.60.4/usage.h	Tue Sep 17 18:20:57 2002
++++ busybox-0.60.4-dban/usage.h	Tue Oct 29 15:04:45 2002
+@@ -1923,6 +1923,40 @@
+ #define whoami_full_usage \
+ 	"Prints the user name associated with the current effective user id."
+ 
++#define wipe_trivial_usage \
++	"[-ucwsiIhfFdDnNvVzZrRtTkKaA] [-B(count)] [-S(size)] [-C(size)] [-l[0-3]] [-x[1-32] -X] [-p(1-32)] [-b(0-255)] [files]"
++#define wipe_full_usage \
++	"Wipe v2.1.0 by Tom Vier <nester@users.sf.net>\n" \
++	"\n" \
++	"Usage is wipe [options] [file-list]\n" \
++	"\n" \
++	"Options:         Default: /usr/src/wipe-2.0.1/wipe -ZdntVAk -S512 -C4096 -l1 -x4 -p1\n" \
++	"\n" \
++	"-h          --   help - display this screen\n" \
++	"-u          --   usage\n" \
++	"-c          --   show copyright and license\n" \
++	"-w          --   show warranty information\n" \
++	"-i  and  -I --   enable (-i) or disable (-I) interaction - overrides force\n" \
++	"-f          --   force file wiping and override interaction\n" \
++	"-r  and  -R --   recursion - traverse subdirectories\n" \
++	"-s          --   silent - disable percentage and error reporting\n" \
++	"-v          --   force verbose - always show percentage\n" \
++	"-V          --   verbose - show percentage if file is >= 25K\n" \
++	"-d  and  -D --   delete (-d) or keep (-D) after wiping\n" \
++	"-n  and  -N --   delete (-n) or skip (-N) special files\n" \
++	"-k  and  -K --   lock (-k) or don't lock (-K) files\n" \
++	"-z          --   zero-out file - single pass of zeroes\n" \
++	"-Z          --   perform normal wipe passes\n" \
++	"-t  and  -T --   enable (-t) or disable (-T) static passes\n" \
++	"-a  and  -A --   write until out of space (-a) or don't (-A)\n" \
++	"-B(count)   --   block device sector count\n" \
++	"-S(size)    --   block device sector size\n" \
++	"-C(size)    --   chunk size - maximum file buffer size in kilobytes\n" \
++	"-l[0-2]     --   sets wipe secure level\n" \
++	"-x[1-32] -X --   sets number of random passes or disables\n" \
++	"-p(1-32)    --   wipe file x number of times\n" \
++	"-b(0-255)   --   overwrite file with this value byte\n" \
++
+ #define xargs_trivial_usage \
+ 	"[COMMAND] [ARGS...]"
+ #define xargs_full_usage \

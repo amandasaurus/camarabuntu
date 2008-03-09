@@ -1,0 +1,23 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+
+uClibc-0.9.20.tar.bz2 released Mon, 30 Jun 2003 18:05:57 -0600
+
+MD5:  ea78e9fbff9377996a31d54832aec3b8  uClibc-0.9.20.tar.bz2
+SHA1: 940179ec40ebd603c69071bbfd1aa54c5342e345  uClibc-0.9.20.tar.bz2
+
+To verify this signature, you can obtain my public key
+from http://codepoet.org/andersen/erik/gpg.asc
+
+Have Fun!
+ -Erik
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE/ANOhX5tkPjDTkFcRAjNNAJ9+5/YqIXATFfOtVSRMwpXeSt8fxQCgsb6R
+dcOZjWXjg7FqIgQxyOiEntI=
+=H08N
+-----END PGP SIGNATURE-----

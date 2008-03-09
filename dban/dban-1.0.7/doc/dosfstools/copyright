@@ -1,0 +1,26 @@
+This is the Debian Linux prepackaged version of the mkdosfs the creator
+for MS-DOS filesystems either on harddisks or on floppies.
+
+This package was put together by Martin Schulze <joey@infodrom.north.de>,
+from sources obtained from:
+ sunsite.unc.edu:/pub/Linux/system/filesystems/dosfs/mkdosfs-ygg-0.3b.lsm
+ sunsite.unc.edu:/pub/Linux/system/filesystems/dosfs/mkdosfs-ygg-0.3b.tar.gz
+ sunsite.unc.edu:/pub/Linux/system/filesystems/dosfs/dosfsck.1.tar.z
+
+Mkdosfs is copyrighted by Dave Hudson <dave@humbug.demon.co.uk>, and was
+later maintained and improved by H. Peter Anvin <hpa@yggdrasil.com>.
+Dave has put the whole package under the GPL.
+
+Dosfsck is copyrighted by Werner Almesberger <werner.almesberger@lrc.di.epfl.ch>
+and Roman Hodek. We both together put the package under the GPL.
+
+The FAT32, LFN, and Atari format additions are copyrighted by Roman
+Hodek <Roman.Hodek@informatik.uni-erlangen.de> and are under the GPL, too.
+
+Both tools (mkdosfs and dosfsck) have been unmaintained since some
+time, so I also took them over as upstream maintainer. The merged
+package is named dosfstools-2.0, and its home site is now
+  ftp.uni-erlangen.de:/pub/Linux/LOCAL/dosfstools
+
+On Debian GNU/Linux systems, the complete text of the GNU General Public
+License can be found in `/usr/share/common-licenses/GPL'.

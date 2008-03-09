@@ -1,0 +1,8 @@
+# DBAN common name.
+DBAN_NAME="Darik's Boot and Nuke"
+
+# DBAN version in major/minor/patch format.
+DBAN_VERSION="1.0.7"
+
+# DBAN architecture.
+DBAN_ARCH="i386"

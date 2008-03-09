@@ -1,0 +1,396 @@
+#!/bin/ash
+
+# Set the shell search path.
+PATH="/bin:/usr/bin"
+
+# The prng seed search directory, which must be under '/floppy'.
+DBAN_SEEDS_DIRECTORY=/floppy/dbanseed
+
+# The temporary logging directory, which must be under '/log'.
+DBAN_LOG_TMP=/log/dban
+
+# The floppy disk log tarball directory, which must be under '/floppy'.
+DBAN_LOG_TARBALLS=/floppy/dbanlog
+
+# The size of the urandom pool in bytes. Entropy seeds must be exactly this size.
+DBAN_URANDOM_SIZE=512
+
+# Include version information.
+. /version
+
+# Strip the heading and tailing quotes from the syslinux.cfg variable.
+DBAN_NUKE=`echo $nuke | sed -e 's/^"//' | sed -e 's/"$//'`
+
+# Export the name and version variables so that dwipe can create a banner.
+export DBAN_NAME
+export DBAN_VERSION
+
+
+dbanLog ()
+{
+	echo "[`date '+%Y/%m/%d %H:%M:%S`] dban: $1" >> $DBAN_LOG_TMP/dban.txt 2> /dev/null
+}
+
+
+
+dbanSaveLog ()
+{
+	echo -n "Saving log file to floppy disk... "
+
+	# Try to mount a DOS floppy.
+	if mount -t msdos $DBAN_FLOPPY_DEV /floppy 2> /dev/null ; then
+
+		# Check that the write-protect tab on the floppy is not set.
+		if grep '^/dev/floppy/0[[:space:]]\+/floppy[[:space:]]\+msdos[[:space:]]\+rw' /proc/mounts > /dev/null ; then
+
+			# Create a directory for the log tarballs.
+			mkdir $DBAN_LOG_TARBALLS 2> /dev/null
+
+			if [ -d $DBAN_LOG_TARBALLS ] ; then
+
+				DBAN_LOG_SUFFIX=0000
+
+				# Find the next available log file name.
+				while [ -f "$DBAN_LOG_TARBALLS/dban$DBAN_LOG_SUFFIX.tgz" ]
+				do
+
+					DBAN_LOG_SUFFIX=$(($DBAN_LOG_SUFFIX+1))
+
+					# Pad the suffix to four digits.
+					if [ $DBAN_LOG_SUFFIX -lt 10   ]; then DBAN_LOG_SUFFIX=0$DBAN_LOG_SUFFIX; fi
+					if [ $DBAN_LOG_SUFFIX -lt 100  ]; then DBAN_LOG_SUFFIX=0$DBAN_LOG_SUFFIX; fi
+					if [ $DBAN_LOG_SUFFIX -lt 1000 ]; then DBAN_LOG_SUFFIX=0$DBAN_LOG_SUFFIX; fi
+	
+					# Check the corner case of the 8.3 msdos filesystem.
+					if [ $DBAN_LOG_SUFFIX -gt 9999 ]; then
+						echo " failed.  There are too many log files already on the floppy disk."
+						return
+					fi
+				done
+
+
+				# Gather interesting proc information.  Note that the busybox tar will
+				# barf on proc files because they are reported to be of zero size.
+
+				dmesg >                 $DBAN_LOG_TMP/dmesg.txt
+
+				if ! dmesg | grep VMware > /dev/null; then
+					# In VMware 4.0, reading the smart_values file will cause a lockup.
+					cp -r /proc/ide         $DBAN_LOG_TMP/proc      2> /dev/null  # may not exist
+				fi
+
+				cp -r /proc/scsi        $DBAN_LOG_TMP/proc      2> /dev/null  # may not exist
+				cp    /proc/cmdline     $DBAN_LOG_TMP/proc
+				cp    /proc/cpuinfo     $DBAN_LOG_TMP/proc
+				cp    /proc/interrupts  $DBAN_LOG_TMP/proc
+				cp    /proc/iomem       $DBAN_LOG_TMP/proc
+				cp    /proc/ioports     $DBAN_LOG_TMP/proc
+				cp    /proc/meminfo     $DBAN_LOG_TMP/proc
+				cp    /proc/partitions  $DBAN_LOG_TMP/proc
+				cp    /proc/pci         $DBAN_LOG_TMP/proc      2> /dev/null  # may not exist
+
+				# Be courteous by setting the tarball root directory name to the tarball file name.
+				mv $DBAN_LOG_TMP /log/dban$DBAN_LOG_SUFFIX
+
+				# Tarball the log files.
+				cd /log
+				tar -c -f dban$DBAN_LOG_SUFFIX.tar *
+				gzip dban$DBAN_LOG_SUFFIX.tar
+
+				if mv dban$DBAN_LOG_SUFFIX.tar.gz $DBAN_LOG_TARBALLS/dban$DBAN_LOG_SUFFIX.tgz 2> /dev/null ; then
+					if umount /floppy ; then
+						echo "saved $DBAN_LOG_TARBALLS/dban$DBAN_LOG_SUFFIX.tgz"
+					else
+						echo "failed."
+						umount -f /floppy
+						echo "Warning: Do not remove a floppy disk if there is drive activity."
+					fi
+
+					else
+						echo "failed. The floppy disk is full."
+						if ! umount /floppy; then
+							umount -f /floppy
+							echo "Warning: Do not remove a floppy disk if there is drive activity."
+						fi
+				fi
+
+				# Change back into our previous working directory.
+				cd -
+
+				# Change the log directory name back in case we get called again.
+				mv /log/dban$DBAN_LOG_SUFFIX $DBAN_LOG_TMP
+				 
+			else
+				# This is a corner case.
+				echo -e "failed.\n  A file named DBANLOGS already exists on the floppy."
+			fi
+
+		else
+			echo "failed"
+			echo "The floppy disk is read-only.  Unset the write-protect tab."
+		fi
+
+	else
+		echo "a floppy disk in DOS format was not found."
+	fi	
+
+}
+
+
+
+dbanFail ()
+{
+
+	# Reset the console, which is usually required when an ncurses program exits unexpectedly.
+	echo -e "\033[?25h\033c\033[J"
+
+	# Blink the error notification.
+	echo -e "\033[5;37;40mError:\033[0;37;40m $1"
+
+	# Log the failure.
+	dbanLog "Error: $1"
+
+	# Print the failure notification with emphasis. 
+	echo -e "\033[1;31;40mDBAN failed."
+	echo -e "\033[1;37;40mThe disks have not been wiped."
+	echo -e "\033[1;37;40mSend the log file with all support requests."
+	echo -e "\033[0;37;40m"
+
+	if [ $DBAN_FLOPPY_DEV ]; then
+		dbanSaveLog
+	fi	
+
+	# Writing the log file is more important than beeping.  The ash read builtin
+	# must be patched to support the timeout option before we can do both.
+
+	while( test 1 ); do
+
+		if [ $DBAN_FLOPPY_DEV ]; then
+			read -p " DBAN failed. Press ENTER to save the log file." DBAN_DUMMY
+			dbanSaveLog
+
+		else
+			# Audible failure notification.
+			sleep 1s
+			echo -n ''
+		fi
+
+	done
+
+}
+
+
+# Clear any stray boot messages.
+clear
+
+# Blue background
+echo -e -n "\033[44m"
+
+# Grey foreground. 
+echo -e -n "\033[37m"
+
+# Disable screen blanking.
+echo -e -n "\033[9;0]" 
+
+# Clear the screen.
+echo -e -n "\033[2J"
+
+# Print the product banner.
+echo "$DBAN_NAME $DBAN_VERSION is loaded.  (You may remove the boot media now.)"
+
+echo -n "Programming the console... "
+echo -e "\\033[30;47]\033[9;0]screen blanking disabled." 
+
+# Call '/log' "scratch" to avoid confusing users that have actual log-based filesystems.
+echo -n "Mounting the proc and scratch filesystems... "
+
+if ! mount -t proc none /proc ; then
+	dbanFail "Unable to mount the proc filesystem. This is a DBAN build error."
+fi
+
+
+if ! mount -t tmpfs none /log ; then
+	dbanFail "Unable to mount the scratch filesystem."
+else
+	echo "mounted."
+fi
+
+
+if ! mkdir -p $DBAN_LOG_TMP/proc ; then
+	dbanFail "Unable to create the log directory."
+fi
+
+
+dbanLog "$DBAN_NAME $DBAN_VERSION started."
+
+# Check whether the kernel detected a floppy drive.
+echo -n "Scanning for a floppy drive... "
+
+if [ -b /dev/floppy/0 ]; then
+	DBAN_FLOPPY_DEV=/dev/floppy/0
+	dbanLog "Found floppy drive $DBAN_FLOPPY_DEV."
+	echo "found."
+
+else
+	# This is the case when dban is booted from a cdrom.
+	echo "device not found."
+
+fi
+
+# Sanity check.  This proc file should never contain the '@' character.
+if grep '@' < /proc/scsi/scsi ; then
+	dbanFail "Sanity check failed. The /proc/scsi/scsi file contains the '@' character."
+fi
+
+if [ $DBAN_FLOPPY_DEV ]; then
+
+	# Tell the user that we will try to load a prng seed.
+	#echo    "Trying to load a prng seed..."
+	echo -n "Searching for a floppy disk... "
+
+	# Mandatory locking is required to properly wipe a regular file,
+	# FIXME: The '-o mand' mount option stopped working with the Debian 2.4.19-4 kernel.
+
+	if mount -t msdos -o mand /dev/floppy/0 /floppy 2> /dev/null ; then
+		echo "found."
+		#echo -n "Scanning for seed files of $DBAN_URANDOM_SIZE bytes... "
+
+		# Note that the ash shell does not support implicit
+		# variable declaration within an "$(())" expression.
+		DBAN_SEEDS_COUNT=0
+
+		# Build a list of suitable prng seeds.
+		for i in `ls -d $DBAN_SEEDS_DIRECTORY/* 2> /dev/null`; do
+			if [ -f $i -a `wc -c < $i` -eq $DBAN_URANDOM_SIZE ]; then
+				DBAN_SEEDS="$DBAN_SEEDS $i"
+				DBAN_SEEDS_COUNT=$(($DBAN_SEEDS_COUNT+1))
+			fi
+		done
+
+		# Tell the user how many prng seed files are available.
+		dbanLog "Found $DBAN_SEEDS_COUNT seed files on the floppy disk."
+
+		if [ "$DBAN_SEEDS_COUNT" -gt 0 ]; then
+			echo "Found $DBAN_SEEDS_COUNT seed files."
+		fi
+
+		# Try to load a prng seed.
+		for i in $DBAN_SEEDS; do
+
+			# Note that "test -w" cannot detect floppy disks that have the physical
+			# write-protect tab enabled, so we must check the proc directly.
+			# FIXME: Change the expression to '...rw,mand' when mandatory locking works again.
+			# if grep '^/dev/floppy/0[[:space:]]\+/floppy[[:space:]]\+msdos[[:space:]]\+rw' /proc/mounts > /dev/null ; then
+
+			if mv $i /log/seed > /dev/null; then
+
+				# Seed urandom.
+				#if dd if=$i of=/dev/urandom bs=$DBAN_URANDOM_SIZE count=1 1> /dev/null 2> /dev/null ; then
+				if dd if=/log/seed of=/dev/urandom bs=$DBAN_URANDOM_SIZE count=1 1> /dev/null 2> /dev/null ; then
+					dbanLog "Loaded prng seed $i."
+					echo "Loaded prng seed $i. (There are $(($DBAN_SEEDS_COUNT-1)) more remaining.)"
+
+				else
+					dbanLog "Warning: The dd to seed urandom failed. Do not trust the results of this wipe."
+					echo "Warning: The dd to seed urandom failed. Do not trust the results of this wipe."
+					break;
+
+				fi
+
+#				if wipe -v $i ; then
+#					dbanLog "Seed $i wiped."
+#					# Wipe will sometimes report 0% completed when called against small files.
+#					# This is a shameless cosmetic hack to ensure that the user sees "100%".
+#					echo -e "\r  $i: 100%"
+#
+#				else
+#					DBAN_WIPE_RETURN=$?
+#					dbanLog "Warning: Wipe failed with return $DBAN_WIPE_RETURN. The prng seed was not wiped."
+#					echo -e "\nWarning: Wipe failed with return $DBAN_WIPE_RETURN. The prng seed was not wiped."
+#
+#				fi
+
+			else
+				# The write protect tab on the floppy disk was set.
+				dbanLog "The floppy disk is read-only.  A prng seed was not loaded."
+				echo "Warning: A prng seed was not loaded because this floppy is read-only."
+				echo "Warning: DBAN will not use a prng seed unless it can be deleted."
+
+			fi
+
+			# We only care about the first seed file in the list.
+			break;
+
+		done
+	
+		# Unmount the floppy and admonish the user if they pulled it out too early.
+		if ! umount /floppy; then
+			echo "Warning: Do not remove a floppy disk if there is drive activity."
+			umount -f /floppy 1> /dev/null 2> /dev/null
+		fi
+
+	else
+		dbanLog "A floppy disk in DOS format was not found."
+		echo "a floppy disk in DOS format was not found."
+
+	fi
+
+fi
+
+# Record the start time.
+DBAN_START=`date '+%a %b %d %T %Y'`
+
+echo -e "\rStarting dwipe....                                                 " 
+sleep 5s
+dbanLog "Wipe started."
+$DBAN_NUKE
+DBAN_RESULT=$?
+
+if [ $DBAN_RESULT -lt 0 ]
+then
+	dbanFail "Dwipe failed with result $DBAN_RESULT."
+fi
+
+clear
+
+if [ $DBAN_RESULT -eq 0 ]
+then
+	# Print the success notification with emphasis.
+	echo -e "\033[1;32;40mDBAN succeeded."
+	echo -e "\033[1;37;40mAll selected disks have been wiped."
+	echo -e "\033[1;37;40mRemove the DBAN boot media and power off the computer."
+	echo -e "\033[0;37;40m"
+	dbanLog "DBAN succeeded. All selected disks have been wiped."
+else
+	# Print the warning notification with emphasis.
+	echo -e "\033[1;33;40mDBAN finished with non-fatal errors."
+	echo -e "\033[1;37;40mThis is usually caused by disks with bad sectors."
+	echo -e "\033[1;37;40mSend the log file with all support requests."
+	echo -e "\033[0;37;40m"
+	dbanLog "DBAN finished with non-fatal errors. The disks were not properly wiped, or there were verification errors."
+fi
+
+
+DBAN_FINISH=`date '+%a %b %d %T %Y'`
+echo "Hardware clock operation start date:  $DBAN_START"
+echo "Hardware clock operation finish date: $DBAN_FINISH" 
+
+
+if [ $DBAN_FLOPPY_DEV ]; then
+	dbanSaveLog
+fi
+
+while( test 1 ); do
+	if [ $DBAN_FLOPPY_DEV ]; then
+		read -p "DBAN finished. Press ENTER to save the log file." DBAN_DUMMY
+		dbanSaveLog
+	else
+		# Sleep forever.
+		sleep 1s;
+	fi
+done
+
+# This will never happen.
+dbanFail "Sanity check failed.  Control passed to the end of the rc script."
+
+# eof

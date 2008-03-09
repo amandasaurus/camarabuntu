@@ -1,0 +1,21 @@
+diff -Ndru linux-2.4.33/init/main.c linux-2.4.33-dban/init/main.c
+--- linux-2.4.33/init/main.c	2006-08-11 00:18:20.000000000 -0400
++++ linux-2.4.33-dban/init/main.c	2006-08-11 16:19:00.000000000 -0400
+@@ -231,8 +231,17 @@
+ 	return 1;
+ }
+ 
++static int __init silent_kernel(char *str)
++{
++	if (*str)
++		return 0;
++	console_loglevel = 1;
++	return 1;
++}
++
+ __setup("debug", debug_kernel);
+ __setup("quiet", quiet_kernel);
++__setup("silent", silent_kernel);
+ 
+ /*
+  * This is a simple kernel command line parsing function: it parses

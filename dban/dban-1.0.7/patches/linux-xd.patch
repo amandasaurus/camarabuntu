@@ -1,0 +1,11 @@
+--- kernel-source-2.4.20-orig/drivers/block/xd.c.orig	2003-05-16 18:36:25.000000000 -0400
++++ kernel-source-2.4.20/drivers/block/xd.c	2003-05-16 18:36:37.000000000 -0400
+@@ -172,7 +172,7 @@
+ 		xd_dma_buffer = (char *)xd_dma_mem_alloc(xd_maxsectors * 0x200);
+ 	if (!xd_dma_buffer)
+ 	{
+-		printk(KERN_ERR "xd: Out of memory.\n");
++		/* printk(KERN_ERR "xd: Out of memory.\n"); */
+ 		return -ENOMEM;
+ 	}
+ 

@@ -1,0 +1,13 @@
+--- uClibc-0.9.19/include/sys/mount.h.orig	2003-06-26 21:47:03.000000000 -0400
++++ uClibc-0.9.19/include/sys/mount.h	2003-06-26 21:47:27.000000000 -0400
+@@ -25,8 +25,8 @@
+ #include <features.h>
+ #include <sys/ioctl.h>
+ 
+-#define BLOCK_SIZE	1024
+-#define BLOCK_SIZE_BITS	10
++#define BLOCK_SIZE	512
++#define BLOCK_SIZE_BITS	9
+ 
+ 
+ /* These are the fs-independent mount-flags: up to 16 flags are

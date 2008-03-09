@@ -1,0 +1,22 @@
+--- linux/kernel/sys.c-dist	2004-10-27 13:15:06.000000000 -0700
++++ linux/kernel/sys.c	2004-10-27 13:16:37.000000000 -0700
+@@ -57,7 +57,7 @@
+  * this indicates whether you can reboot with ctrl-alt-del: the default is yes
+  */
+ 
+-int C_A_D = 1;
++int C_A_D = 0;
+ int cad_pid = 1;
+ 
+ 
+@@ -369,8 +369,10 @@
+ 
+ 	if (C_A_D)
+ 		schedule_task(&cad_tq);
++/*
+ 	else
+ 		kill_proc(cad_pid, SIGINT, 1);
++*/
+ }
+ 	
+ 

@@ -1,0 +1,27 @@
+# Darik's Boot and Nuke build configuration.
+
+# Prepend the bundled bin folder to the working path.
+PATH=`pwd`/bin:$PATH
+
+# The working directory, which is deleted by the script when it finishes.
+DBAN_TMP="/tmp/dban"
+
+# Boot filesystem working name.
+DBAN_BOOTFILE="${DBAN_TMP}/fs.boot"
+
+# Boot volume label.
+DBAN_BOOTLABEL=dban-${DBAN_VERSION}
+
+# Boot volume size in 1024-byte floppy sectors.
+DBAN_BOOTSIZE=1440
+
+# Final floppy image name.
+DBAN_FLPNAME="dban-${DBAN_VERSION}_${DBAN_ARCH}.ima"
+
+# Final iso package name.
+DBAN_ISONAME="dban-${DBAN_VERSION}_${DBAN_ARCH}.iso"
+
+# Final zip package name.
+DBAN_ZIPNAME="dban-${DBAN_VERSION}_${DBAN_ARCH}.zip"
+
+# eof
